@@ -42,9 +42,6 @@ Contributions are welcomed! To contribute additional test cases to **IoTBench**,
 - If you have any questions, please send to [Z. Berkay Celik](https://beerkay.github.io/) 
 
 ### How can I cite **IoTBench**?
-
- In general for **IoTBench**:
-
 ``` 
 @misc{saint-taint-analysis,
 Author = {Z. Berkay Celik, Leonardo Babun and others},
