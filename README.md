@@ -45,12 +45,14 @@ Contributions are welcomed! To contribute additional test cases to **IoTBench**,
 
  In general for **IoTBench**:
 
-> @misc{saint-taint-analysis,
+``` 
+@misc{saint-taint-analysis,
 Author = {Z. Berkay Celik, Leonardo Babun and others},
 Title = {Sensitive Information Tracking in Commodity IoT},
 Year = {2018},
 Eprint = {arXiv:2173068},
 }
+```
 
 ## Authors
 This repo is managed and maintained by [Z. Berkay Celik](https://beerkay.github.io/) (zbc102@cse.psu.edu).
