@@ -16,7 +16,7 @@ In late 2017, we acquired the official apps from the official [SmartThings Githu
 
 **IoTBench** also includes malicious apps. These apps are designed for evaluating the proposed tools for data leaks and for finding the malicious behaviors. We categorize the malicious IoT apps as follows:
 
-- The following folders include malicious apps designed for [**SmartThings**](https://www.smartthings.com/) platform under *smartThings* folder.
+- The following folders include malicious apps under *smartThings* folder designed for [**SmartThings**](https://www.smartthings.com/) platform.
     - **smartThings-sensitive-data-leaks**: This folder includes 19 different malicious apps that contain test cases for interesting flow analysis problems as well as for IoT-specific challenges. These apps are developed for the purpose of evaluating the SainT static taint tracking system. These apps can be used to evaluate both static and dynamic taint analysis tools designed for SmartThings apps; It enables assessing a tool's accuracy and effectiveness through the ground truths included in the suite.
         > **List of sensitive data leaks:** You can find a full list data leaks along with their definitions in the Appendix of [SainT paper](http://arxiv.org/).
 
@@ -26,7 +26,7 @@ In late 2017, we acquired the official apps from the official [SmartThings Githu
 
         > Currently waiting for a response from authors to include the contexIoT apps in **IoTBench**.
 
-- The following folders include apps designed for [**OpenHAB**](https://www.openhab.org/) platform under *openHAB* folder.
+- The following folders include apps under *openHAB* folde designed for [**OpenHAB**](https://www.openhab.org/) IoT platform.
      - **openhab-third-party-rules**: This folder includes the apps downloaded by crawling the GitHub openHAB open-source projects. 
 
 ### What kind of malicious behavior **IoTBench** apps contain?
