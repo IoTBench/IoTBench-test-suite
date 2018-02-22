@@ -2,7 +2,7 @@
 
 ![alt text](http://i68.tinypic.com/25ut821.jpg)
 
-# IoTBench
+# IoTBench v1.0
 
 **IoTBench** repository contains IoT apps from various IoT platforms. **IoTBench** test-suite is under continual development, always welcoming contributions of the new IoT apps. In particular, we always welcome help towards resolving the issues currently open.
 
