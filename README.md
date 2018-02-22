@@ -24,7 +24,7 @@ In late 2017, we acquired the official apps from the official [SmartThings Githu
 
         > List of malicious behaviors: You can find the list of apps in the source code of the app's definition blocks and in [contexiot web page](https://sites.google.com/site/iotcontextualintegrity/home).
 
-        > Currently waiting for a response from authors to include the contexiot apps in **IoTBench**.
+        > Currently waiting for a response from authors to include the contexIoT apps in **IoTBench**.
 
 - The following folders include apps designed for [**OpenHAB**](https://www.openhab.org/) platform under *openHAB* folder.
      - **openhab-third-party-rules**: This folder includes the apps downloaded by crawling the GitHub openHAB open-source projects. 
