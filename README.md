@@ -41,7 +41,7 @@ Contributions are welcomed! To contribute additional test cases to **IoTBench**,
 - To fork the project, commit apps along with descriptions (similar to Table 3 in the Appendix of SainT paper) and update this README and then send us a pull request. 
 - If you have any questions, please send to [Z. Berkay Celik](https://beerkay.github.io/) 
 
-### How can I cite **IoTBench**?
+## Citing this work
 ``` 
 @misc{saint-taint-analysis,
 Author = {Z. Berkay Celik, Leonardo Babun and others},
