@@ -55,7 +55,7 @@ Eprint = {arXiv:2173068},
 This repo is managed and maintained by [Z. Berkay Celik](https://beerkay.github.io/) (zbc102@cse.psu.edu).
 
 We would like to thank, among others, the following  authors contributed IoT apps (ordered according to the GitHub contributors page):
-
+- [Z. Berkay Celik](https://beerkay.github.io/) (Penn State University)
 - [Leo Babun](http://leobabun.wixsite.com/leo-babun-phd) (Florida International University)
 - Amit Kumar Sikder (Florida International University)
 - (Your name)
