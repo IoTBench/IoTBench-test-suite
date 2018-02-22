@@ -1,0 +1,29 @@
+// OpenHAB rules for date and time
+//
+// These rules contain the code that performs status changes based on
+// astronomical or calendar events, or at specific times of day.
+//
+// NOTE: only *status changes* are in this file; automated actions
+// should NOT be included here, but in the respective rule files such as
+// 'lights.rules' or 'alarm.rules'.
+
+// Required libraries
+import org.openhab.core.library.types.*
+
+// Day's on and Night's off after sunrise
+rule "Daytime"
+when
+	Item sSunrise_Event changed to ON
+then
+	postUpdate(sDay, ON)
+	postUpdate(sNight, OFF)
+end
+
+// Day's off and Night's on after sunset
+rule "Nighttime"
+when
+	Item sSunset_Event changed to ON
+then
+	postUpdate(sDay, OFF)
+	postUpdate(sNight, ON)
+end

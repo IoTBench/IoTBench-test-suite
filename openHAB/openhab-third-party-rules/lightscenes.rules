@@ -1,0 +1,234 @@
+// OpenHAB rules for automatic light switches
+//
+// These rules define the light scenes as well as the relations bewteen lights
+// and switches that cannot be configured using Z-wave associations. 
+//
+// NOTE: any automated actions that switch lights on or of, or change
+// the light scene, should NOT be included here, but in the respective
+// rule files that handle those event types, typically 'lights.rules',
+// 'motions.rules', or 'alarm.rules'.
+
+// Required libraries
+import org.openhab.core.library.types.*
+
+// Used constants for light scene codes
+// See also ../transform/lightscenes.map
+val Number LIGHTSOFF = 0
+val Number LIGHTSNORMAL = 1
+val Number LIGHTSDIMMED = 2
+val Number LIGHTSNOBODYHOME = 6
+val Number FIREALARM = 7
+val Number NIGHTALARM = 8
+val Number ALARM = 9
+
+// *************************
+// GROUND FLOOR light scenes
+rule "Ground floor Scene 0 - lights off"
+when
+	Item nScene_GF_Lights received command 0
+then
+	// GF Indoor lights
+	sendCommand(sLight_Garderobe, OFF)
+	sendCommand(sLight_Living_Sitting, OFF)
+	sendCommand(sLight_Living_Act01, OFF)
+	sendCommand(dLight_Living_Wall, OFF)
+	sendCommand(dLight_Living_Window, OFF)
+	sendCommand(sLight_Dining_Table, OFF)
+	sendCommand(dLight_Kitchen, OFF)
+	sendCommand(sLight_Xmastree, OFF)
+end
+
+rule "Ground floor Scene 1 - normal lights"
+when
+	Item nScene_GF_Lights received command 1
+then
+	// GF Indoor lights
+	sendCommand(sLight_Living_Act01, ON)
+	sendCommand(dLight_Living_Wall, 50)
+	sendCommand(dLight_Living_Window, 50)
+	sendCommand(sLight_Dining_Table, ON)
+	sendCommand(dLight_Kitchen, 25)
+end
+
+rule "Ground floor Scene 2 - dimmed lights"
+when
+	Item nScene_GF_Lights received command 2
+then
+	// GF Indoor lights
+	sendCommand(sLight_Living_Act01, ON)
+	sendCommand(sLight_Living_Sitting, OFF)
+	sendCommand(dLight_Living_Wall, 25)
+	sendCommand(dLight_Living_Window, 25)
+	sendCommand(sLight_Dining_Table, OFF)
+	sendCommand(dLight_Kitchen, 12)
+end
+
+rule "Ground floor Scene 7 - fire alarm"
+when
+	Item nScene_GF_Lights received command 7
+then
+	// GF Indoor lights
+	sendCommand(sLight_Garderobe, ON)
+	sendCommand(sLight_Living_Sitting, ON)
+	sendCommand(dLight_Kitchen, 85)
+	// Outdoor lights
+	sendCommand(sLight_FrontDoor, ON)
+	sendCommand(sLight_GardenDoor, ON)
+end
+
+rule "Ground floor Scene 8 - night alarm"
+when
+	Item nScene_GF_Lights received command 8
+then
+	// GF Indoor lights
+	sendCommand(dLight_Living_Wall, 40)
+	sendCommand(dLight_Living_Window, 40)
+	sendCommand(sLight_Dining_Table, ON)
+	sendCommand(dLight_Kitchen, 20)
+	// Outdoor lights
+	sendCommand(sLight_FrontDoor, ON)
+	sendCommand(sLight_GardenDoor, ON)
+end
+
+rule "Ground floor Scene 9 - full alarm"
+when
+	Item nScene_GF_Lights received command 9
+then
+	// GF Indoor lights
+	sendCommand(sLight_Garderobe, ON)
+	sendCommand(sLight_Living_Sitting, ON)
+	sendCommand(dLight_Kitchen, 85)
+	// Outdoor lights
+	sendCommand(sLight_FrontDoor, ON)
+	sendCommand(sLight_GardenDoor, ON)
+end
+
+// ************************
+// FIRST FLOOR light scenes
+rule "First floor Scene 0 - lights off"
+when
+	Item nScene_FF_Lights received command 0
+then
+	// FF Indoor lights
+	sendCommand(sLight_FirstFl_Corridor, OFF)
+	sendCommand(sLight_TopFl_Corridor, OFF)
+	sendCommand(sLight_Study, OFF)
+	sendCommand(sLight_Study_Books, OFF)
+	sendCommand(sLight_Study_Act01, OFF)
+	sendCommand(sLight_Bedroom_01, OFF)
+	sendCommand(sLight_Bedroom_02, OFF)
+	sendCommand(sLight_KidsRoom_01, OFF)
+	sendCommand(sLight_KidsRoom_02, OFF)
+	sendCommand(sLight_KidsRoom_Act01, OFF)
+end
+
+rule "First floor Scene 1 - normal lights"
+when
+	Item nScene_FF_Lights received command 1
+then
+	// FF Indoor lights
+	sendCommand(sLight_Study_Books, ON)
+end
+
+rule "First floor Scene 6 - nobody home"
+when
+	Item nScene_FF_Lights received command 6
+then
+	// FF Indoor lights
+	sendCommand(sLight_Bedroom_02, ON)
+end
+
+rule "First floor Scene 7 - fire alarm"
+when
+	Item nScene_FF_Lights received command 7
+then
+	// FF Indoor lights
+	sendCommand(sLight_FirstFl_Corridor, ON)
+	sendCommand(sLight_TopFl_Corridor, ON)
+	sendCommand(sLight_Study, ON)
+	sendCommand(sLight_Bedroom_01, ON)
+	sendCommand(sLight_Bedroom_02, ON)
+	sendCommand(sLight_KidsRoom_01, ON)
+end
+
+rule "First floor Scene 8 - night alarm"
+when
+	Item nScene_FF_Lights received command 8
+then
+	// FF Indoor lights
+	sendCommand(sLight_TopFl_Corridor, ON)
+end
+
+rule "First floor Scene 9 - full alarm"
+when
+	Item nScene_FF_Lights received command 9
+then
+	// FF Indoor lights
+	sendCommand(sLight_FirstFl_Corridor, ON)
+	sendCommand(sLight_TopFl_Corridor, ON)
+	sendCommand(sLight_Study, ON)
+	sendCommand(sLight_Bedroom_01, ON)
+	sendCommand(sLight_Bedroom_02, ON)
+	sendCommand(sLight_KidsRoom_01, ON)
+end
+
+// ****************************
+// Scene activation by switches
+// and work-arounds for non-working Z-wave associations
+
+// Living room actuator switch 1
+// uses a Z-wave association
+
+// Living room actuator switch 2
+// linked to GROUND FLOOR light scene
+rule "Living Actuator 2"
+when
+	Item sLight_Living_Act02 changed
+then
+	// Switch ON: GF Lightscene LIGHTSNORMAL
+	if (sLight_Living_Act02.state == ON) {
+		//logInfo("Lightscenes", "Turning on the ground floor lights, because someone pressed the associated wall switch.")
+		sendCommand(nScene_GF_Lights, LIGHTSNORMAL)
+	}
+	// Switch OFF: GF Lightscene LIGHTSOFF
+	if (sLight_Living_Act02.state == OFF) {
+		//logInfo("Lightscenes", "Turning off the ground floor lights, because someone pressed the associated wall switch.")
+		sendCommand(nScene_GF_Lights, LIGHTSOFF)
+	}
+end
+
+// First floor actuator switch
+// alternative for Z-wave associations
+rule "FF Actuator 1"
+when
+	Item sLight_FirstFl_Act01 changed
+then
+	// Switch ON: FF Corridor Light ON
+	if (sLight_FirstFl_Act01.state == ON) {
+		//logInfo("Lightscenes", "Turning on the first floor corridor light, because someone pressed the associated wall switch.")
+		sendCommand(sLight_FirstFl_Corridor, ON)
+	}
+	// Switch OFF: FF Corridor Light OFF
+	if (sLight_FirstFl_Act01.state == OFF) {
+		//logInfo("Lightscenes", "Turning off the first floor corridor light, because someone pressed the associated wall switch.")
+		sendCommand(sLight_FirstFl_Corridor, OFF)
+	}
+end
+
+// Child's room actuator switch
+// alternative for Z-wave associations
+rule "CR Actuator 1"
+when
+	Item sLight_KidsRoom_Act01 changed
+then
+	// Switch ON: CR Bed Light ON
+	if (sLight_KidsRoom_Act01.state == ON) {
+		//logInfo("Lightscenes", "Turning on the child's bed light, because someone pressed the associated wall switch.")
+		sendCommand(sLight_KidsRoom_02, ON)
+	}
+	// Switch OFF: CR Bed Light OFF
+	if (sLight_KidsRoom_Act01.state == OFF) {
+		//logInfo("Lightscenes", "Turning off the child's bed light, because someone pressed the associated wall switch.")
+		sendCommand(sLight_KidsRoom_02, OFF)
+	}
+end

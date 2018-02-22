@@ -1,0 +1,317 @@
+// OpenHAB rules for alarms
+//
+// These rules contain all code for the alarm functionality, including:
+//	- initialisation and reset of the alarms;
+//	- manual configuration options for the alarms;
+//	- actions that are executed when an alarm is activated.
+//
+// NOTE: events that activate an alarm should NOT be included here, but in
+// the respective rule files that handle those event types, typically
+// in 'motion.rules'. The only alarm that should be activated by the alarm
+// functionality itself is tampering.
+
+// Required libraries
+import org.openhab.core.library.types.*
+
+// Used constants for alarm status codes
+// See also ../transform/lightscenes.map
+val Number SIRENSOFF = 0
+val Number SIRENCONTINUOUS = 5
+val Number FIREALARM = 7
+val Number NIGHTALARM = 8
+val Number ALARM = 9
+
+// Used constants for presence codes
+// as in ../transform/presence.map
+val Number UNKNOWN = 0
+val Number FIRE = 8
+
+// ************
+// ALARM RESETS
+// ************
+// Set alarms at startup
+rule "Alarm reset at startup"
+when 
+	System started
+then
+	sendCommand(sAlarm_Reset, ON)
+end
+
+// Reset all alarms
+rule "Reset all alarms"
+when
+	Item sAlarm_Reset changed to ON
+then
+	// Set sirens to continuous
+	sendCommand(nSirens_GeneralMode, SIRENCONTINUOUS)
+	// Rest full alarm
+	sendCommand(sAlarm_Full, OFF)
+	// Reset night alarm
+	sendCommand(sAlarm_Night, OFF)
+	sendCommand(sAlarm_Night_Auto, ON)
+	// Reset fire alarm
+	sendCommand(sAlarm_Fire, OFF)
+	sendCommand(sAlarm_Fire, ON)
+	// Reset reset
+	sendCommand(sAlarm_Reset, OFF)	
+end
+
+// *********************
+// Change presence state to unknown when alarms are reset
+rule "Presence after alarm reset"
+when
+	Item cgAlarmActivation changed to CLOSED
+then
+	logInfo("Alarm", "UNKNOWN what is going on, because alarms were just reset.")
+	postUpdate(nStatus_Presence, UNKNOWN)
+end
+
+// ****************
+// Reset full alarm when turned off
+rule "Reset full alarm"
+when
+	Item sAlarm_Full changed to OFF
+then
+	// Cancel activation
+	postUpdate(cAlarmActivation_Full, CLOSED)
+end
+
+// *****************
+// Reset night alarm when turned off
+rule "Reset night alarm"
+when
+	Item sAlarm_Night changed to OFF
+then
+	// Cancel activation
+	postUpdate(cAlarmActivation_Night, CLOSED)
+end
+
+// **************
+// Reset fire alarm when turned off
+rule "Reset fire alarm"
+when
+	Item sAlarm_Fire changed to OFF
+then
+	// Cancel activation
+	postUpdate(cAlarmActivation_Fire, CLOSED)
+end
+
+// **************
+// ALARM SETTINGS
+// **************
+// Automatic Night Alarm
+rule "Auto turn on night alarm"
+when
+	Item nStatus_Presence changed to 5
+then
+	if (sAlarm_Night_Auto.state == ON) {
+		logInfo("Alarm", "Turning on night alarm, because auto mode is on and it seems everybody is asleep.")
+		sendCommand(sAlarm_Night, ON)
+	}
+end
+
+rule "Auto turn off night alarm"
+when
+	Item nStatus_Presence changed to 3
+then
+	if (sAlarm_Night_Auto.state == ON
+	 && sAlarm_Night.state == ON
+	 && cAlarmActivation_Night.state != OPEN) {
+		logInfo("Alarm", "Turning off night alarm, because auto mode is on and it seems somebody is awake.")
+		sendCommand(sAlarm_Night, OFF)
+	}
+end
+
+// *****************
+// ALARM ACTIVATIONS
+// *****************
+// Actions when full alarm activated
+rule "Activate full alarm"
+when
+	Item cAlarmActivation_Full changed to OPEN
+then
+	// Set presence status
+	postUpdate(nStatus_Presence, ALARM)
+
+	// Register last alarm
+	logInfo("Alarm", "Full alarm activated.")
+	postUpdate(tLastAlarmTime_Full,new DateTimeType())
+	postUpdate(tLastAlarmTime,new DateTimeType())
+	postUpdate(strLastAlarmType,"Inbraakalarm")
+
+	// Activate sirens and strobes
+	sendCommand(nSirens_GeneralMode, ALARM)
+	
+	// Turn on lights
+	sendCommand(nScene_GF_Lights, ALARM)
+	sendCommand(nScene_FF_Lights, ALARM)
+end
+
+// *****************
+// Actions when night alarm activated
+rule "Activate night alarm"
+when
+	Item cAlarmActivation_Night changed to OPEN
+then
+	// It should be nighttime for this alarm to do anything
+	if (sNight.state == ON) {
+
+		// Set presence status
+		postUpdate(nStatus_Presence, ALARM)
+		
+		// Register last alarm
+		logInfo("Alarm", "Night alarm activated.")
+		postUpdate(tLastAlarmTime_Night,new DateTimeType())
+		postUpdate(tLastAlarmTime,new DateTimeType())
+		postUpdate(strLastAlarmType,"Nachtalarm")
+		
+		// Activate sirens and strobes
+		sendCommand(nSirens_GeneralMode, NIGHTALARM)
+
+		// Turn on lights
+		sendCommand(nScene_GF_Lights, NIGHTALARM)
+		sendCommand(nScene_FF_Lights, NIGHTALARM)
+	}
+	else {
+		// Deactivate if not nighttime
+		postUpdate(cAlarmActivation_Night, CLOSED)
+		logInfo("Alarm", "Night alarm triggered but automatically reset because it is daytime.")
+	}
+end
+
+// *****************
+// Actions when fire alarm activated
+rule "Activate fire alarm"
+when
+	Item cAlarmActivation_Fire changed to OPEN
+then
+	// Set presence status
+	postUpdate(nStatus_Presence, FIRE)
+	
+	// Register last alarm
+	logInfo("Alarm", "Fire alarm activated.")
+	postUpdate(tLastAlarmTime_Fire,new DateTimeType())
+	postUpdate(tLastAlarmTime,new DateTimeType())
+	postUpdate(strLastAlarmType,"Brandalarm")
+	
+	// Activate sirens and strobes
+	sendCommand(nSirens_GeneralMode, FIREALARM)
+
+	// Turn on lights
+	sendCommand(nScene_GF_Lights, FIREALARM)
+	sendCommand(nScene_FF_Lights, FIREALARM)
+end
+
+// *****************
+// Actions when all alarms deactivated
+rule "Alarms deactivated"
+when
+	Item cgAlarmActivation changed to CLOSED
+then
+	// Deactivate sirens & strobes
+	sendCommand(nSirens_GeneralMode, SIRENSOFF)
+end
+
+// ******************
+// ALARM SIRENS MODES
+// 0 - turn off
+// 1 to 6 - set devices configurations
+// 7 - fire alarm
+// 8 - night alarm
+// 9 - full alarm
+// The following values are used for setting device configuration parameters:
+// Vision ZM-1602 Parameter 1 Siren/Strobe mode: 0=All 1=Siren only 2=Strobe only
+// Vision ZM-1602 Parameter 2 Alarm auto stop time: 0=30s 1=60s 2=120s 3=will not auto stop
+
+rule "Alarm sirens mode 0 - all off"
+when
+	Item nSirens_GeneralMode received command 0
+then
+	// Deactivate all sirens and strobes
+	sendCommand(sSiren_01_Activation, OFF)
+end
+
+rule "Alarm sirens mode 1 - sirene setting"
+when
+	Item nSirens_GeneralMode received command 1
+then
+	// Set all sirens to sound & strobe for 60s
+	sendCommand(nSiren_01_Mode, 0)
+	sendCommand(nSiren_01_Duration, 1)
+	sendCommand(nSirens_GeneralMode, SIRENSOFF) 
+end
+
+rule "Alarm sirens mode 2 - sirene setting"
+when
+	Item nSirens_GeneralMode received command 2
+then
+	// Set all sirens to sound & strobe for 120s
+	sendCommand(nSiren_01_Mode, 0)
+	sendCommand(nSiren_01_Duration, 2)
+	sendCommand(nSirens_GeneralMode, SIRENSOFF)
+end
+
+rule "Alarm sirens mode 3 - sirene setting"
+when
+	Item nSirens_GeneralMode received command 3
+then
+	// Set all sirens to strobe only for 120s
+	sendCommand(nSiren_01_Mode, 2)
+	sendCommand(nSiren_01_Duration, 2)
+	sendCommand(nSirens_GeneralMode, SIRENSOFF)
+end
+
+rule "Alarm sirens mode 4 - sirene setting"
+when
+	Item nSirens_GeneralMode received command 4
+then
+	// Set all sirens to continuous strobe only
+	sendCommand(nSiren_01_Mode, 2)
+	sendCommand(nSiren_01_Duration, 3)
+	sendCommand(nSirens_GeneralMode, SIRENSOFF)
+end
+
+rule "Alarm sirens mode 5 - sirene setting"
+when
+	Item nSirens_GeneralMode received command 5
+then
+	// Set all sirens to continuous sound & strobe
+	sendCommand(nSiren_01_Mode, 0)
+	sendCommand(nSiren_01_Duration, 3)
+	sendCommand(nSirens_GeneralMode, SIRENSOFF)
+end
+
+rule "Alarm sirens mode 7 - fire alarm"
+when
+	Item nSirens_GeneralMode received command 7
+then
+	// Activate only strobes for fire alarm
+	// because smoke detectors have built in sirens
+	sendCommand(nSiren_01_Mode, 2)
+	sendCommand(nSiren_01_Duration, 3)
+	sendCommand(sSiren_01_Activation, ON)
+end
+
+rule "Alarm sirens mode 8 - night alarm"
+when
+	Item nSirens_GeneralMode received command 8
+then
+	// Activate sirens only if set
+	if (sAlarm_Night_Siren.state == ON) {
+		sendCommand(sSiren_01_Activation, ON)
+	}
+	// Activate only strobe if sirens not set
+	if (sAlarm_Night_Siren.state == OFF) {
+		sendCommand(nSiren_01_Mode, 2)
+		sendCommand(nSiren_01_Duration, 3)
+		sendCommand(sSiren_01_Activation, ON)
+	}
+end
+
+rule "Alarm sirens mode 9 - full alarm"
+when
+	Item nSirens_GeneralMode received command 9
+then
+	// Activate all sirens and strobes
+	sendCommand(sSiren_01_Activation, ON)
+end

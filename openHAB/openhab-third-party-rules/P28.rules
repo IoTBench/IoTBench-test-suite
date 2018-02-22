@@ -1,0 +1,61 @@
+
+
+
+
+
+/******************************************************************** Apagar a luz da despensa após XX segundos **************************************************************************/
+rule "Apagar a despensa"
+when
+  	Item Luz_gTER_Servico_Despensa changed
+then
+	if (Luz_gTER_Servico_Despensa.state == ON)
+	{
+		createTimer(now.plusSeconds(240)) [|
+			Luz_gTER_Servico_Despensa.sendCommand(OFF)
+   		]
+	}
+end
+
+
+/******************************************************************** Apagar a luz do banheiro de serviço após XX minutos **************************************************************************/
+rule "Apagar a luz do banheiro de servico"
+when
+  	Item Luz_gTER_Servico_Banheiro changed
+then
+	if (Luz_gTER_Servico_Banheiro.state == ON)
+	{
+		createTimer(now.plusMinutes(10)) [|
+			Luz_gTER_Servico_Banheiro.sendCommand(OFF)
+   		]
+	}
+end
+
+
+/******************************************************************** Apagar a luz do despejo após XX minutos **************************************************************************/
+rule "Apagar a luz do despejo"
+when
+  	Item Luz_gTER_Servico_Despejo changed
+then
+	if (Luz_gTER_Servico_Despejo.state == ON)
+	{
+		createTimer(now.plusMinutes(120)) [|
+			Luz_gTER_Servico_Despejo.sendCommand(OFF)
+   		]
+	}
+	//Teste.sendCommand(now.getDayOfWeek())
+end
+
+
+/******************************************************************** Apagar a luz do banheiro da piscina após XX minutos **************************************************************************/
+rule "Apagar a luz do banheiro da piscina"
+when
+  	Item Luz_gTER_Quintal_Banheiro changed
+then
+	if (Luz_gTER_Quintal_Banheiro.state == ON)
+	{
+		createTimer(now.plusMinutes(10)) [|
+			Luz_gTER_Quintal_Banheiro.sendCommand(OFF)
+   		]
+	}
+end
+

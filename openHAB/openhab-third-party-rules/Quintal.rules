@@ -1,0 +1,8 @@
+/******************************************************************** Spot da sala de TV **************************************************************************/
+
+rule "Luz do muro da piscina mudou" 
+when 
+Item Luz_gTER_Quintal_MuroPiscina changed
+then
+	Luz_gTER_Quintal_MuroBanheiro.sendCommand(Luz_gTER_Quintal_MuroPiscina.state.toString)
+end

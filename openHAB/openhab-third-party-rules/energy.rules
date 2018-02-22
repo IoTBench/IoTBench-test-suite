@@ -1,0 +1,49 @@
+// OpenHAB rules for energy
+//
+// These rules contain calculations and actions based on energy readings.
+
+// Required libraries
+import org.joda.time.*
+import org.openhab.core.library.types.*
+
+// Variables
+var Number total
+var Number totalT1
+var Number totalT2
+var Number total_tdMidnight
+var Number total_ydMidnight
+var Number usageLast24Hrs
+var Number usageYesterday
+var Number usageDayToNow
+
+// Calculate total electricity delivered 
+rule "Total electricity"
+when
+	Item nElectr_Delivery_T1 received update or
+	Item nElectr_Delivery_T2 received update
+then
+	// Calculate the total of the T1 and T2 counters
+	totalT1 = nElectr_Delivery_T1.state as DecimalType
+	totalT2 = nElectr_Delivery_T2.state as DecimalType
+	total = totalT1 + totalT2
+	postUpdate(nElectr_Delivery, total)
+
+	// Calculate total usage values from today and last 24 hrs
+	// NOTE: requires working persistence service
+	usageLast24Hrs = nElectr_Delivery.deltaSince(now.minusDays(1)) as DecimalType
+	postUpdate(nElectr_Delivery_Last24Hrs, usageLast24Hrs)
+	total_tdMidnight = nElectr_Delivery.historicState(now.toDateMidnight).state as DecimalType
+	usageDayToNow = total - total_tdMidnight
+	postUpdate(nElectr_Delivery_DayToNow, usageDayToNow)
+end
+
+rule "Electricity usage yesterday"
+when
+	Time cron "1 0 * * * ?" 
+then
+	// Calculate total usage values from yesterday
+	// NOTE: requires working persistence service
+	total_ydMidnight = nElectr_Delivery.historicState(now.minusDays(1).toDateMidnight).state as DecimalType
+	usageYesterday = total_tdMidnight - total_ydMidnight
+	postUpdate(nElectr_Delivery_PrevDay, usageYesterday)
+end

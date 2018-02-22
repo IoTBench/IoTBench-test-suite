@@ -1,0 +1,220 @@
+// OpenHAB rules when motion detected
+//
+// These rules define the actions that should be perfomed when any motion is
+// detected by motion or door sensors, or no motion is seen anymore.
+// This typically includes:
+//	- logging motion time and place
+//	- switching lights
+//	- activation of alarms
+//
+// NOTE: be careful with including updates of the presence status here, since
+// the presence status is automatically evaluated by 'presence.rules' upon
+// motion (and every minute).
+
+// Required libraries
+import org.openhab.core.library.types.*
+
+// Used constants for status codes as in ../transform/presence.map
+val Number UNKNOWN = 0
+val Number HOME = 1
+val Number CAMEHOME = 2
+val Number AWAKE = 3
+val Number TOBED = 4
+val Number ASLEEP = 5
+val Number NOBODYHOME = 6
+val Number AWAY = 7
+val Number ALARM = 9
+
+// **************
+// MOTION SENSORS
+// **************
+// Movement in the living room
+rule "Living room movement"
+when
+	Item cSensor_Living_Motion changed
+then
+	// Register last movement
+	postUpdate(tLastMotionTime_Living,new DateTimeType())
+
+	// Action when no more motion
+	if (cSensor_Living_Motion.state == CLOSED) {
+		// Determine if the other motion sensor is still open
+		if (cSensor_FirstFl_Motion.state == OPEN) {
+			postUpdate(strLastMotionLoc, "Upstairs")
+		}
+	}
+
+	// Actions when motion detected
+	if(cSensor_Living_Motion.state == OPEN) {
+		// Register motion and as last motion location
+		postUpdate(tLastMotionTime,new DateTimeType())
+		postUpdate(strLastMotionLoc, "Downstairs")
+
+		// If FULL ALARM is armed, activate it
+		if (sAlarm_Full.state == ON) {
+			logInfo("Motion", "Activating full alarm, because motion is detected downstairs while the full alarm is on.")
+			postUpdate(cAlarmActivation_Full, OPEN)
+		}
+	}
+end
+
+// **************
+// Movement on the first floor
+rule "First floor movement"
+when
+	Item cSensor_FirstFl_Motion changed
+then
+	// Register last movement
+	postUpdate(tLastMotionTime_FirstFl,new DateTimeType())
+
+	// Action when no more motion
+	if (cSensor_FirstFl_Motion.state == CLOSED) {
+		// Determine if the other motion sensor is still open
+		if (cSensor_Living_Motion.state == OPEN) {
+			postUpdate(strLastMotionLoc, "Downstairs")
+		} 
+	}
+
+	// Actions when motion detected
+	if (cSensor_FirstFl_Motion.state == OPEN) {
+		// Register as last motion location
+		postUpdate(tLastMotionTime,new DateTimeType())
+		postUpdate(strLastMotionLoc, "Upstairs")
+
+		// If FULL ALARM is armed, activate it
+		if (sAlarm_Full.state == ON) {
+			logInfo("Motion", "Activating full alarm, because motion is detected upstairs while the full alarm is on.")
+			postUpdate(cAlarmActivation_Full, OPEN)
+		}
+	}	
+end
+
+// *********************
+// DOOR & WINDOW SENSORS
+// *********************
+// Front Door
+rule "Front Door opened or closed"
+when
+	Item cSensor_FrontDoor changed
+then
+	// Register last movement
+	postUpdate(tLastMotionTime_FrontDoor,new DateTimeType())
+	postUpdate(tLastMotionTime,new DateTimeType())
+	postUpdate(strLastMotionLoc, "FrontDoor")
+	
+	// Actions when door opened
+	if (cSensor_FrontDoor.state == OPEN) {
+	
+		// Turn on corridor light at dark if no motion downstairs (i.e. coming home)
+		if (sNight.state == ON
+		 && cSensor_Living_Motion.state == CLOSED) {
+			logInfo("Motion", "Turning on the garderobe light, because the front door is opened at dark, while no motion downstairs.")
+			sendCommand(sLight_Garderobe, ON)
+		}
+		
+		// Update presence status
+		if (nStatus_Presence.state == NOBODYHOME
+		 || nStatus_Presence.state == AWAY) {
+			logInfo("Motion", "Somebody CAME HOME, because the front door is opened after nobody was home.")
+			postUpdate(nStatus_Presence, CAMEHOME)
+		}
+		
+		// If FULL ALARM is armed, activate it
+		// --todo: implement delay
+		if (sAlarm_Full.state == ON) {
+			logInfo("Motion", "Activating full alarm, because front door is opened while the full alarm is on.")
+			postUpdate(cAlarmActivation_Full, OPEN)
+		}
+		// If NIGHT ALARM is armed, activate it
+		if (sAlarm_Night.state == ON) {
+			logInfo("Motion", "Activating night alarm, because front door is opened while the night alarm is on.")
+			postUpdate(cAlarmActivation_Night, OPEN)
+		}
+	}
+end
+
+// ***********
+// Garden Door
+rule "Garden Door opened or closed"
+when
+	Item cSensor_GardenDoor changed
+then
+	// Register last movement
+	postUpdate(tLastMotionTime_GardenDoor,new DateTimeType())
+	postUpdate(tLastMotionTime,new DateTimeType())
+	postUpdate(strLastMotionLoc, "GardenDoor")
+	
+	// Actions when door opened
+	if (cSensor_GardenDoor.state == OPEN) {
+	
+		// Update presence status
+		if (nStatus_Presence.state == NOBODYHOME
+		 || nStatus_Presence.state == AWAY) {
+			logInfo("Motion", "Somebody CAME HOME, because the garden door is opened after nobody was home.")
+			postUpdate(nStatus_Presence, CAMEHOME)
+		}
+		
+		// If FULL ALARM is armed, activate it
+		// --todo: implement delay
+		if (sAlarm_Full.state == ON) {
+			logInfo("Motion", "Activating full alarm, because garden door is opened while the full alarm is on.")
+			postUpdate(cAlarmActivation_Full, OPEN)
+		}
+		// If NIGHT ALARM is armed, activate it
+		if (sAlarm_Night.state == ON) {
+			logInfo("Motion", "Activating night alarm, because garden door is opened while the night alarm is on.")
+			postUpdate(cAlarmActivation_Night, OPEN)
+		}
+	}
+end
+
+// ************
+// Kitchen Door
+rule "Kitchen Door opened or closed"
+when
+	Item cSensor_KitchenDoor changed
+then
+	// Register last movement
+	postUpdate(tLastMotionTime_KitchenDoor,new DateTimeType())
+	postUpdate(tLastMotionTime,new DateTimeType())
+	postUpdate(strLastMotionLoc, "KitchenDoor")
+	
+	// Actions when door opened
+	if (cSensor_KitchenDoor.state == OPEN) {
+	
+		// Update presence status
+		if (nStatus_Presence.state == NOBODYHOME
+		 || nStatus_Presence.state == AWAY) {
+			logInfo("Motion", "Somebody CAME HOME, because the kitchen door is opened after nobody was home.")
+			postUpdate(nStatus_Presence, CAMEHOME)
+		}
+		
+		// If FULL ALARM is armed, activate it
+		// --todo: implement delay
+		if (sAlarm_Full.state == ON) {
+			logInfo("Motion", "Activating full alarm, because kitchen door is opened while the full alarm is on.")
+			postUpdate(cAlarmActivation_Full, OPEN)
+		}
+		// If NIGHT ALARM is armed, activate it
+		if (sAlarm_Night.state == ON) {
+			logInfo("Motion", "Activating night alarm, because kitchen door is opened while the night alarm is on.")
+			postUpdate(cAlarmActivation_Night, OPEN)
+		}
+	}
+end
+
+// *********
+// Shed Door
+rule "Shed Door opened or closed"
+when
+	Item cSensor_ShedDoor changed
+then
+	// Register last movement
+	postUpdate(tLastMotionTime_ShedDoor,new DateTimeType())
+
+	// Actions
+	if (sNight.state == ON) {
+		logInfo("Motion", "Turning on the garden door light, because the shed door is opened or closed while it is dark.")
+		sendCommand(sLight_GardenDoor, ON)
+	}
+end

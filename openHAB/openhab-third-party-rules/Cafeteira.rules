@@ -1,0 +1,123 @@
+import org.joda.time.*
+import org.openhab.core.library.types.*
+import org.openhab.model.script.actions.Timer
+import org.openhab.model.script.actions.*
+
+
+import org.openhab.core.library.types.PercentType
+import org.openhab.core.library.items.SwitchItem
+	
+    
+
+
+var Timer masterAlarmTime = null
+
+/******************************************************************** Inicializacao **************************************************************************/
+rule "Startup system"
+when
+	System started
+then
+//	postUpdate( Alarm_MasterTimeMins, 345)
+//	postUpdate( Alarm_MasterTime, 0)
+	Alarm_MasterTime.sendCommand(String::format("%02d:%02d", alarmTime.getHourOfDay(), alarmTime.getMinuteOfHour()))
+
+end
+
+/******************************************************************** Cron a cada 1 hora **************************************************************************/
+// Site cron: www.cronmaker.com
+rule "A cada uma hora"
+when
+    Time cron "0 0 0/1 1/1 * ? *"
+//	Time cron "0 5 0 * * ?"
+then
+//	logError ("CAFETEIRA", "Oie")
+//	if (Alarm_MasterTimeMins.state == Unitialized || Alarm_MasterTimeMins.state == Undefined)
+	if (Alarm_MasterTimeMins.state == Undefined)
+	{
+		postUpdate(Alarm_MasterTimeMins, 345)
+//		logError ("CAFETEIRA", "Oie2")
+	}
+
+	// Desliga a cafeteira a cada uma hora se <=5 OU >=9h
+	if (now.getHourOfDay <=4 || now.getHourOfDay>=10
+	{
+		Tom_gTER_Cafeteira.sendCommand(OFF)
+	}
+end
+
+/******************************************************************** Programação do horário para ligar**************************************************************************/
+rule "Master bedroom alarm time"
+when
+    Time cron "0 5 0 * * ?" or
+    Item Alarm_MasterTimeMins received update 
+then
+	
+	var int minutes minutes = ((Alarm_MasterTimeMins.state as DecimalType).intValue())
+	// logError ("CAFETEIRA", "1")
+	
+    if (masterAlarmTime != null)
+	{
+		// logError ("CAFETEIRA", "2")
+	    masterAlarmTime.cancel()
+		// logError ("CAFETEIRA", "3")
+	}
+    
+
+    // work out when the alarm is to fire - start from midnight
+	// logError ("CAFETEIRA", "4")
+    var DateTime alarmTime = parse(now.getYear() + "-" + now.getMonthOfYear() + "-" + now.getDayOfMonth() + "T00:00")
+	// logError ("CAFETEIRA", "5")
+
+    // add the number of minutes selected
+    alarmTime = alarmTime.plusMinutes(minutes)
+	// logError ("CAFETEIRA", "6")
+
+    // if we have already past the alarm time then set it for the following day
+    if (alarmTime.beforeNow)
+	{
+	    alarmTime = alarmTime.plusDays(1)
+		// logError ("CAFETEIRA", "7")
+	}
+
+    // create a timer to execute the alarm at the specified time
+    masterAlarmTime = createTimer(alarmTime) 
+	[| 
+        if (Alarm_Master.state == ON)
+		{
+			//logError ("CAFETEIRA", "Ligando!")
+			Tom_gTER_Cafeteira.sendCommand(ON)
+			createTimer(now.plusMinutes(150)) 
+			[|
+				Tom_gTER_Cafeteira.sendCommand(OFF)
+			]
+		}
+    ]
+
+    // update the alarm display time    
+    Alarm_MasterTime.sendCommand(String::format("%02d:%02d", alarmTime.getHourOfDay(), alarmTime.getMinuteOfHour()))
+end
+
+
+
+/******************************************************************** Notificacao cafeteira ligada **************************************************************************/
+rule "Avisar Android que a cafeteira ligou" 
+when 
+	Item Tom_gTER_Cafeteira changed from OFF to ON
+then
+	sendNotification("botura@gmail.com", "O café já vai sair!  ;)")
+end
+
+
+
+/******************************************************************** Forçar desligar cafeteira **************************************************************************/
+rule "Desligar a cafeteira se ligada fora do horario limite"
+when
+	Item Tom_gTER_Cafeteira changed to ON
+then
+	// Desliga a cafeteira a partir das 9 por segurança
+	if (now.getHourOfDay < 5 || now.getHourOfDay > 10 )
+		Tom_gTER_Cafeteira.sendCommand(OFF)
+end
+
+
+

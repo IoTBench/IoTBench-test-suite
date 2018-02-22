@@ -1,0 +1,20 @@
+
+
+/******************************************************************** Desligar detecção de movimento da Camera1 após XX segundos **************************************************************************/
+var Timer tmrOff_Camera1 = null 
+
+rule "Mottion Off Camera 1"
+when
+  	Item gCamera_Camera1 changed from OFF to ON
+then
+	if(tmrOff_Camera1 == null || tmrOff_Camera1.hasTerminated) 
+	{
+		tmrOff_Camera1 = createTimer(now.plusSeconds(30), [|
+			tmrOff_Camera1 = null
+            gCamera_Camera1.sendCommand(OFF)
+        ])
+    }
+
+end
+
+

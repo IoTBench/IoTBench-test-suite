@@ -1,0 +1,304 @@
+// OpenHAB rules for evaluating presence
+//
+// These rules evaluate the presence status. The presence status may also
+// be set by other rule files, but if possible it should be done here.
+//
+// NOTE: any actions based on the presence status should NOT be included here,
+// but in the respective rule files. 
+
+// Required libraries
+import org.openhab.core.library.types.*
+
+// Used constants for presence codes
+// as in ../transform/presence.map
+val Number UNKNOWN = 0
+val Number HOME = 1
+val Number CAMEHOME = 2
+val Number AWAKE = 3
+val Number TOBED = 4
+val Number ASLEEP = 5
+val Number NOBODYHOME = 6
+val Number AWAY = 7
+val Number FIRE = 8
+val Number ALARM = 9
+
+// Hour of day constants
+val Number MIDNIGHT = 0
+val Number EARLYMORNINGHOUR = 6
+val Number MORNINGHOUR = 8
+val Number LATEMORNINGHOUR = 10
+val Number BEDTIMEHOUR = 23
+
+// Duration constants in minutes used for determining status
+val Number VERYSHORTTIME = 3
+val Number SHORTTIME = 10
+val Number SOMETIME = 30
+val Number LONGTIME = 45
+val Number VERYLONGTIME = 60
+ 
+// Declare timer variables
+var Number timerMotion = 0
+var Number timerNoMotion = 0
+
+// Set presence state at startup
+rule "Presence reset at startup"
+when 
+	System started
+then
+	timerMotion = 0
+	timerNoMotion = 0
+	logInfo("Presence", "UNKNOWN what is going on, because the system just started.")
+	postUpdate(nStatus_Presence, 0)
+end
+
+// Evaluate presence state every 1 minute
+rule "Presence evaluation"
+when
+	Time cron "0 0/1 * * * ?" or
+	Item cgMotion changed
+then
+	var currentHour = now.getHourOfDay
+
+	// Update timers first with another 1 minute click
+	// Note: timer reset is done after evaluation so we can see if there was a change!
+	if (cgMotion.state == OPEN) {
+		timerMotion = timerMotion + 1
+		postUpdate(tLastMotionTime,new DateTimeType())
+	}
+	if (cgMotion.state == CLOSED) {
+		timerNoMotion = timerNoMotion + 1
+	}
+
+	// The statements below evaluate if the current presence state should change
+	// Note that any alarm is triggered by the motion rules, not here!
+
+	// ********
+	// Evaluate current state: 0. unknown
+	if (nStatus_Presence.state == UNKNOWN) {
+		// Motion detected, so somebody is home
+		// ... and alarm is not active
+		// => update presence status to 1. Somebody at home
+		if (cgMotion.state == OPEN
+		 && sAlarm_Full.state != ON) {
+			logInfo("Presence", "Somebody is AT HOME, because there is motion while the full alarm is off.")
+			postUpdate(nStatus_Presence, HOME)
+		}
+		// No motion around the house
+		// ... for a long time after later in the morning
+		if (cgMotion.state == CLOSED
+		 && currentHour >= LATEMORNINGHOUR
+		 && timerNoMotion >= VERYLONGTIME) {
+			logInfo("Presence", "Seems NOBODY HOME, because there is no motion for {} minutes after {} hrs.", VERYLONGTIME, LATEMORNINGHOUR)
+			postUpdate(nStatus_Presence, NOBODYHOME)
+		}
+	}
+
+	// ********
+	// Evaluate current state: 1. Somebody at home
+	if (nStatus_Presence.state == HOME) {
+		// No more motion around the house ...
+		if (cgMotion.state == CLOSED) {
+			
+			// ... for a short time
+			// ... and full alarm is on
+			// => update presence status to 7. Everybody Away
+			if (timerNoMotion >= SHORTTIME
+			 && sAlarm_Full.state == ON) {
+				logInfo("Presence", "Everybody is AWAY, because no motion for {} minutes and the full alarm is on.", SHORTTIME)
+				postUpdate(nStatus_Presence, AWAY)
+			}
+			
+			// ... after bed time and before morning
+			// ... and last movement upstairs
+			// => update presence status to 4. Everybody gone to bed
+			if (currentHour >= BEDTIMEHOUR
+			 || currentHour < MORNINGHOUR) {
+				if (timerNoMotion >= SOMETIME
+				 && strLastMotionLoc.state == 'Upstairs') {
+					logInfo("Presence", "Gone TO BED, because it is between {} and {} hrs, and after the last motion upstairs there has been no motion for {} minutes.", BEDTIMEHOUR, MORNINGHOUR, SOMETIME)
+					postUpdate(nStatus_Presence, TOBED)
+				}		
+			}
+			
+			// ... for a short time with doors closed and no mobiles at home
+			// ... and last motion was one of the entrances
+			// => update presence status to 6. Nobody home
+			if (timerNoMotion >= SHORTTIME
+			 && cgEntrances.state == CLOSED
+			 && ngMobilePhones.state == 0) {
+				if (strLastMotionLoc.state == 'FrontDoor'
+				 || strLastMotionLoc.state == 'GardenDoor') {
+					logInfo("Presence", "Seems NOBODY HOME, because no mobiles at home, no motion for {} minutes and last motion was at an exit door.", SOMETIME)
+					postUpdate(nStatus_Presence, NOBODYHOME)
+				}
+			}
+			// ... for a some time with doors closed and maximum only one forgotten mobile at home
+			// ... and last motion was one of the entrances
+			// => update presence status to 6. Nobody home
+			if (timerNoMotion >= SOMETIME
+			 && cgEntrances.state == CLOSED
+			 && ngMobilePhones.state <= 1) {
+				if (strLastMotionLoc.state == 'FrontDoor'
+				 || strLastMotionLoc.state == 'GardenDoor') {
+					logInfo("Presence", "Seems NOBODY HOME, because no motion for {} minutes and last motion was at an exit door.", SOMETIME)
+					postUpdate(nStatus_Presence, NOBODYHOME)
+				}
+			}
+			// ... for a some time with no mobile phones present
+			// ... and last motion was on ground floor or one of the entrances
+			// => update presence status to 6. Nobody home
+			if (timerNoMotion >= SOMETIME
+			 && ngMobilePhones.state == 0) {
+				if (strLastMotionLoc.state == 'FrontDoor'
+				 || strLastMotionLoc.state == 'GardenDoor'
+				 || strLastMotionLoc.state == 'Downstairs') {
+					logInfo("Presence", "Seems NOBODY HOME, because no mobiles at home and the last motion location was {} {} minutes ago.", strLastMotionLoc.state, LONGTIME)
+					postUpdate(nStatus_Presence, NOBODYHOME)
+				}
+			}
+			// ... for a long time with doors closed
+			// ... and last motion was on ground floor  or one of the entrances
+			// => update presence status to 6. Nobody home
+			if (timerNoMotion >= VERYLONGTIME
+			 && cgEntrances.state == CLOSED) {
+			 	if (strLastMotionLoc.state == 'FrontDoor'
+				 || strLastMotionLoc.state == 'GardenDoor'
+				 || strLastMotionLoc.state == 'Downstairs') {
+					logInfo("Presence", "Seems NOBODY HOME, because the last motion location was {} {} minutes ago.", strLastMotionLoc.state, LONGTIME)
+					postUpdate(nStatus_Presence, NOBODYHOME)
+				}
+			}			
+		}
+	}
+
+	// ********
+	// Evaluate current state: 2. Somebody came home
+	if (nStatus_Presence.state == CAMEHOME) {	
+		// Motion around the house ...
+		if (cgMotion.state == OPEN) {
+			// ... for a short time
+			// ... and alarm is not active
+			// => update presence status to 1. Somebody at home
+			if (timerMotion >= SHORTTIME
+			 && sAlarm_Full.state != ON) {
+				logInfo("Presence", "Seems somebody is AT HOME, because there has been motion for {} minutes while the full alarm is off.", SHORTTIME)
+				postUpdate(nStatus_Presence, HOME)
+			}
+		}
+		// No motion anymore and doors are closed...
+		if (cgMotion.state == CLOSED
+		 && cgEntrances.state == CLOSED) {
+			// ... for a short time
+			// => update presence status to 6. Nobody home
+			// Note: alarm would have been triggered already by the alarm rules
+			if (timerNoMotion >= SHORTTIME) {
+				logInfo("Presence", "Apparently NOBODY came HOME, because there has been no motion for {} minutes.", SHORTTIME)
+				postUpdate(nStatus_Presence, NOBODYHOME)
+			}
+		}
+	}
+
+	// ********
+	// Evaluate current state: 3. Somebody awake
+	if (nStatus_Presence.state == AWAKE) {
+		// Also motion downstairs
+		// ... and after 6 in the morning
+		// => update presence status to 1. Somebody home
+		if (cSensor_Living_Motion.state == OPEN
+		 && currentHour >= EARLYMORNINGHOUR
+		 && timerMotion >= VERYSHORTTIME) {
+			logInfo("Presence", "Somebody is AT HOME, because after being awake there has been motion downstairs for {} minutes after {} hrs.", VERYSHORTTIME, EARLYMORNINGHOUR)
+			postUpdate(nStatus_Presence, HOME)
+		}
+		// No more motion for a short time
+		// ... and last motion upstairs
+		// => update presence status to 5. Everybody sleeps
+		if (cgMotion.state == CLOSED
+		 && timerNoMotion >= SHORTTIME
+		 && strLastMotionLoc.state == 'Upstairs') {
+			logInfo("Presence", "Everybody is back ASLEEP after being awake, because after the last motion upstairs there has been no more motion for {} minutes.", SHORTTIME)
+			postUpdate(nStatus_Presence, ASLEEP)
+		}
+	}
+	
+	// ********
+	// Evaluate current state: 4. Everybody gone to bed
+	if (nStatus_Presence.state == TOBED) {
+		// Motion, so aparently not everyone to bed
+		// => update presence status to 1. Somebody at home
+		if (cgMotion.state == OPEN) {
+			logInfo("Presence", "Somebody is AT HOME, and not gone to bed, because there is still motion in the house.")
+			postUpdate(nStatus_Presence, HOME)
+		}
+		// No motion for long time (note: already counting)
+		// ... and before 6 am (but after midnight)
+		if (cgMotion.state == CLOSED
+		 && timerNoMotion >= VERYLONGTIME
+		 && currentHour < EARLYMORNINGHOUR) {
+				logInfo("Presence", "Everybody is ASLEEP, because it is before {} hrs. and there has been no motion for {} minutes.", EARLYMORNINGHOUR, VERYLONGTIME)
+				postUpdate(nStatus_Presence, ASLEEP)
+		} 
+	}
+	
+	// ********
+	// Evaluate current state: 5. Everybody sleeps
+	if (nStatus_Presence.state == ASLEEP) {
+		// Motion upstairs
+		// => update presence status to 3. Somebody awake
+		if (cSensor_FirstFl_Motion.state == OPEN) {
+			logInfo("Presence", "Seems somebody is AWAKE, because there is motion on the first floor after everybody was asleep.")
+			postUpdate(nStatus_Presence, AWAKE)
+		} 
+	}
+
+	// ********
+	// Evaluate current state: 6. Nobody home
+	if (nStatus_Presence.state == NOBODYHOME) {
+		// Alarm turned on
+		// => update presence status to 7. Everybody away
+		if (sAlarm_Full.state == ON) {
+			logInfo("Presence", "Everybody is AWAY, because nobody is home and the full alarm is on.")
+			postUpdate(nStatus_Presence, AWAY)
+		}
+		// Motion around the house
+		// => update presence status to 2. Somebody came home
+		if (cgMotion.state == OPEN) {
+			logInfo("Presence", "Somebody CAME HOME, because motion is detected after nobody was home.")
+			postUpdate(nStatus_Presence, CAMEHOME)
+		}
+	}
+
+	// ********
+	// Evaluate current state: 7. Everybody away
+	if (nStatus_Presence.state == AWAY) {
+		// Motion around the house
+		if (cgMotion.state == OPEN) {
+			// ... and alarm is off
+			// => update presence status to 2. Somebody came home 
+			if (sAlarm_Full.state == OFF) {
+				logInfo("Presence", "Somebody CAME HOME, because motion is detected after everybody was away, and the alarm is turned off.")
+				postUpdate(nStatus_Presence, CAMEHOME)
+			} else {
+				// ... and alarm not off
+				// => update presence status to 0. unknown
+				logInfo("Presence", "UNKNOWN what is going on, because motion is detected while everybody is away, and the alarm is still on.")
+				postUpdate(nStatus_Presence, UNKNOWN)
+			}
+		} else {
+			// Alarm turned off
+			// => update presence state to 6. Nobody home
+			if (sAlarm_Full.state == OFF) {
+				logInfo("Presence", "NOBODY HOME, because the alarm is turned off, but still no motion in the house.")
+				postUpdate(nStatus_Presence, NOBODYHOME)
+			}
+		}
+	}
+
+	// ********************************************
+	// Reset timers for next change of item cgMotion
+	if (cgMotion.state == OPEN) { timerNoMotion = 0 }
+	if (cgMotion.state == CLOSED) { timerMotion = 0 }
+	// Post timers 
+	postUpdate(nMotionTime, timerMotion)
+	postUpdate(nNoMotionTime, timerNoMotion)
+end

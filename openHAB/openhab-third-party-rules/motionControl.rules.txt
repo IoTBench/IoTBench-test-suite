@@ -1,0 +1,31 @@
+rule "Motion sensor active rule to switch ON"
+when
+	Item MotionSensor_Proxy changed from OFF to ON or
+	Item MotionSensor_Proxy changed from NULL to ON   //If Mqtt broker loses connection, then state goes to NULL. So when it comes back online, this statement ensures this rule works
+then
+	val String currentTime = String::format( "%1$tl:%1$tM%1$tp on %1$tA, %1$tB %1$te, %1$tY", new java.util.Date ) //Next two lines are used to show current date and time
+	var Number currenthour = now.getHourOfDay		//Gets current hour of day according to joda.time library
+	var Number currentday = now.getDayOfWeek		//Gets day of week according to joda.time library
+	logInfo("On Log","Test: currentTime=[{}]",currentTime)
+	logInfo("On2 Log","Test: hourofday=[{}]",currenthour)	//Log to show hour in 24 hour format(0-23) according to joda.time library
+	logInfo("On3 Log","Test: dayofweek=[{}]",currentday)	//Log to show day of week according to joda.time library i.e. Monday(1),Tuesday(2)..,Saturday(6),Sunday(7)
+	logInfo("Rule_ON_fired","")                         	//No rules are applied because lights need to be on if it's turned off due to motion sensor before 9am and need t be switched on if motion is detected after 9am
+	publish("broker","LED/cmnd/power","on")         	//Set Mqtt parameters according to your broker,mqqt topic and payload to be sent
+end	
+
+rule "Motion sensor active rule to switch OFF"
+when
+	Item MotionSensor_Proxy changed from ON to OFF or
+	Item MotionSensor_Proxy changed from NULL to OFF
+then
+	var Number currenthour = now.getHourOfDay
+	var Number currentday = now.getDayOfWeek
+	val String currentTime = String::format( "%1$tl:%1$tM%1$tp on %1$tA, %1$tB %1$te, %1$tY", new java.util.Date )
+	logInfo("Off Log","Test: currentTime=[{}]",currentTime)		//This log show that the execution block is executed when triggers are fired
+	logInfo("Off2 Log","Test: hourofday=[{}]",currenthour)
+	logInfo("Off3 Log","Test: dayofweek=[{}]",currentday)
+	if(!(currenthour >= 9 && currenthour < 18) || !(currentday <= 5)){    //Conditions under which rule is fired. Involves boolean logic
+		publish("broker","LED/cmnd/power","off")
+		logInfo("Rule_OFF_fired","")		//This log shows you that your conditions are working correctly
+	}
+end

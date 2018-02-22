@@ -1,0 +1,13 @@
+/******************************************************************** Luz da Escada **************************************************************************/
+
+rule "Luz da escada superior mudou" 
+when 
+Item Luz_gSUP_Escada changed
+then
+	Luz_gTER_SalaEstar_Escada.sendCommand(Luz_gSUP_Escada.state.toString)
+end
+
+rule "Luz da escada inferior mudou" when Item Luz_gTER_SalaEstar_Escada changed
+then
+	Luz_gSUP_Escada.sendCommand(Luz_gTER_SalaEstar_Escada.state.toString)
+end

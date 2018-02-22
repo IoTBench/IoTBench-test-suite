@@ -1,0 +1,53 @@
+// Cenario
+
+rule "Cenario térreo" 
+when 
+	Item Cenario changed
+then
+	// 1 = Escurinho
+	if (Cenario.state == 1)
+	{
+		
+		Luz_gTER_SalaEstar_Jardim.sendCommand(ON)
+		Luz_gTER_SalaEstar_Arandela.sendCommand(ON)
+		Luz_gTER_SalaTV_SpotTV.sendCommand(OFF)
+		Luz_gTER_SalaTV_SpotJanelaTV.sendCommand(OFF)
+		Luz_gTER_SalaEstar_SpotEscada.sendCommand(OFF)
+		Luz_gTER_SalaEstar_SpotArandela.sendCommand(OFF)
+		Luz_gTER_SalaTV_Teto.sendCommand(OFF)
+		gTER_Jantar.sendCommand(OFF)
+		gTER_Cozinha.sendCommand(OFF)
+		gTER_Varanda.sendCommand(OFF)
+	}
+	
+	// 2 = Leitura
+	if (Cenario.state == 2)
+	{
+		Luz_gTER_SalaEstar_SpotEscada.sendCommand(ON)
+		Luz_gTER_SalaEstar_Jardim.sendCommand(ON)
+		Luz_gTER_SalaEstar_SpotArandela.sendCommand(ON)
+		Luz_gTER_SalaEstar_Arandela.sendCommand(ON)
+		Luz_gTER_SalaTV_SpotTV.sendCommand(ON)
+		Luz_gTER_SalaTV_SpotJanelaTV.sendCommand(ON)
+		Luz_gTER_SalaTV_Teto.sendCommand(ON)
+		gTER_Jantar.sendCommand(OFF)
+		gTER_Cozinha.sendCommand(OFF)
+		gTER_Varanda.sendCommand(OFF)
+	}
+
+	// 3 = Jantar
+	if (Cenario.state == 3)
+	{
+		Luz_gTER_SalaEstar_SpotEscada.sendCommand(ON)
+		Luz_gTER_SalaEstar_Jardim.sendCommand(ON)
+		Luz_gTER_SalaEstar_SpotArandela.sendCommand(ON)
+		Luz_gTER_SalaEstar_Arandela.sendCommand(ON)
+		Luz_gTER_SalaTV_SpotTV.sendCommand(ON)
+		Luz_gTER_SalaTV_SpotJanelaTV.sendCommand(ON)
+		Luz_gTER_SalaTV_Teto.sendCommand(OFF)
+		Luz_gTER_Jantar_Teto.sendCommand(ON)
+		Luz_gTER_Jantar_Spot.sendCommand(ON)
+		gTER_Varanda.sendCommand(OFF)
+	}
+	
+end

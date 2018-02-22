@@ -1,0 +1,16 @@
+/******************************************************************** Luz do Hall da Sala de Estar **************************************************************************/
+
+rule "Luz do hall da sala de estar mudou" 
+when 
+Item Luz_gTER_SalaEstar_Hall changed
+then
+	Luz_gTER_Brinquedo_Hall.sendCommand(Luz_gTER_SalaEstar_Hall.state.toString)
+end
+
+
+rule "Luz do hall do quarto de brinquedo mudou" 
+when 
+Item Luz_gTER_Brinquedo_Hall changed
+then
+	Luz_gTER_SalaEstar_Hall.sendCommand(Luz_gTER_Brinquedo_Hall.state.toString)
+end

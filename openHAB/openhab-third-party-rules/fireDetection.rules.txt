@@ -1,0 +1,27 @@
+rule "Fire detection"
+    when
+        Item SensorTemperature received update
+    then
+        // check for any temperature sensors in the house that are very high
+        if (SensorTemperature.members.filter(s | s.state > 45).size > 0) {        
+            if (Alarm_Fire.state != ON) {
+                logInfo("sensor.rules", "Fire alarm tripped by temperature sensor!")
+                Alarm_Fire.postUpdate(ON)
+            }    	
+        }
+    end
+
+    rule "Fire alarm"
+    when
+        Item Alarm_Fire received update ON
+    then
+        // turn on all lights
+        callScript("lights_on")
+    
+        // send notifications
+        notifyMyAndroid("Security", "FIRE alarm has been tripped!!!", 2)
+        sendTweet("*** FIRE alarm - someone call the fire dept!!! ***")
+    
+        // send an email
+        sendMail("ben@home.com", "FIRE ALARM!!", "The fire alarm has been activated!!!")
+    end

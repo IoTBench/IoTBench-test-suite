@@ -1,0 +1,8 @@
+/******************************************************************** Spot da sala de TV **************************************************************************/
+
+rule "Spot da sala de TV mudou" 
+when 
+Item Luz_gTER_SalaTV_SpotTV changed
+then
+	Luz_gTER_SalaTV_SpotJanelaTV.sendCommand(Luz_gTER_SalaTV_SpotTV.state.toString.toString)
+end

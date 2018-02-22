@@ -1,0 +1,194 @@
+/********************************************************************  Reconhecimento de voz  **************************************************************************/
+
+rule "Voice Control" 
+when 
+Item VoiceCommand received command
+then
+	var String command = VoiceCommand.state.toString.toLowerCase
+
+	if (command.contains("tudo"))
+	{
+		if (command.contains("acender"))
+		{
+		}
+		if (command.contains("apagar"))
+		{
+			gTerreo.sendCommand(OFF)
+			gSuperior.sendCommand(OFF)
+		}
+	}
+	
+	if (command.contains("fachada") || command.contains("frente"))
+	{
+		if (command.contains("acender"))
+		{
+			callScript("AcenderFachada")
+		}
+		if (command.contains("apagar"))
+		{
+			callScript("ApagarFachada")
+		}
+	}
+
+	if (command.contains("garagem"))
+	{
+		if (command.contains("acender"))
+		{
+			Luz_gTER_Frente_TetoGaragem.sendCommand(ON)
+			Luz_gTER_Frente_ArandelaGaragem.sendCommand(ON)
+			Luz_gTER_Frente_Hall.sendCommand(ON)
+		}
+		if (command.contains("apagar"))
+		{
+			Luz_gTER_Frente_TetoGaragem.sendCommand(ON)
+			Luz_gTER_Frente_ArandelaGaragem.sendCommand(OFF)
+			Luz_gTER_Frente_Hall.sendCommand(ON)
+		}
+	}
+	
+	if (command.contains("tv"))
+	{
+		if (command.contains("acender"))
+		{
+			//Luz_gTER_SalaEstar_Hall.sendCommand(ON)
+			//Luz_gTER_SalaTV_Teto.sendCommand(ON)
+			//Luz_gTER_SalaEstar_SpotEscada.sendCommand(ON)
+			//Luz_gTER_SalaEstar_Jardim.sendCommand(ON)
+			Luz_gTER_SalaTV_SpotTV.sendCommand(ON)
+			Luz_gTER_SalaTV_SpotJanelaTV.sendCommand(ON)
+		}
+		
+		if (command.contains("apagar"))
+		{
+			//Luz_gTER_SalaEstar_Hall.sendCommand(OFF)
+			//Luz_gTER_SalaTV_Teto.sendCommand(OFF)
+			//Luz_gTER_SalaEstar_SpotEscada.sendCommand(OFF)
+			//Luz_gTER_SalaEstar_Jardim.sendCommand(OFF)
+			Luz_gTER_SalaTV_SpotTV.sendCommand(OFF)
+			Luz_gTER_SalaTV_SpotJanelaTV.sendCommand(OFF)
+			
+		}
+	}
+
+	if (command.contains("estar"))
+	{
+		if (command.contains("acender"))
+		{
+			Luz_gTER_SalaEstar_Hall.sendCommand(ON)
+			Luz_gTER_SalaEstar_SpotEscada.sendCommand(ON)
+			Luz_gTER_SalaEstar_Jardim.sendCommand(ON)
+			Luz_gTER_SalaEstar_SpotArandela.sendCommand(ON)
+			Luz_gTER_SalaEstar_Arandela.sendCommand(ON)
+		}
+		
+		if (command.contains("apagar"))
+		{
+			Luz_gTER_SalaEstar_Hall.sendCommand(OFF)
+			Luz_gTER_SalaEstar_SpotEscada.sendCommand(OFF)
+			Luz_gTER_SalaEstar_Jardim.sendCommand(OFF)
+			Luz_gTER_SalaEstar_SpotArandela.sendCommand(OFF)
+			Luz_gTER_SalaEstar_Arandela.sendCommand(OFF)
+		}
+	}
+	
+	
+	if (command.contains("escada"))
+	{
+		if (command.contains("acender"))
+		{
+			Luz_gSUP_Escada.sendCommand(ON)
+		}
+		
+		if (command.contains("apagar"))
+		{
+			Luz_gSUP_Escada.sendCommand(OFF)
+		}
+	}
+
+	if (command.contains("cozinha"))
+	{
+		if (command.contains("acender"))
+		{
+			Luz_gTER_Cozinha_Teto.sendCommand(ON)
+		}
+		
+		if (command.contains("apagar"))
+		{
+			Luz_gTER_Cozinha_Teto.sendCommand(OFF)
+		}
+	}
+
+	if (command.contains("jantar"))
+	{
+		if (command.contains("acender"))
+		{
+			Luz_gTER_Jantar_Teto.sendCommand(ON)
+		}
+		
+		if (command.contains("apagar"))
+		{
+		Luz_gTER_Jantar_Teto.sendCommand(OFF)
+		}
+	}
+	
+	if (command.contains("churrasqueira") || command.contains("varanda"))
+	{
+		if (command.contains("acender"))
+		{
+			Luz_gTER_Varanda_Teto.sendCommand(ON)
+		}
+		
+		if (command.contains("apagar"))
+		{
+			Luz_gTER_Varanda_Teto.sendCommand(OFF)
+		}
+	}
+	
+	if (command.contains("quintal") || command.contains("piscina"))
+	{
+		if (command.contains("acender"))
+		{
+			Luz_gTER_Quintal_MuroChurrasqueira.sendCommand(ON)
+			Luz_gTER_Quintal_MuroPiscina.sendCommand(ON)
+			Luz_gTER_Quintal_MuroBanheiro.sendCommand(ON)
+			Luz_gTER_Quintal_Holofote.sendCommand(ON)
+		}
+		
+		if (command.contains("apagar"))
+		{
+			Luz_gTER_Quintal_MuroChurrasqueira.sendCommand(OFF)
+			Luz_gTER_Quintal_MuroPiscina.sendCommand(OFF)
+			Luz_gTER_Quintal_MuroBanheiro.sendCommand(OFF)
+			Luz_gTER_Quintal_Holofote.sendCommand(OFF)
+			Luz_gTER_Quintal_Banheiro.sendCommand(OFF)
+		}
+	}
+	
+	if (command.contains("lavabo"))
+	{
+		if (command.contains("acender"))
+		{
+			Luz_gTER_Lavabo_Teto.sendCommand(ON)
+		}
+		
+		if (command.contains("apagar"))
+		{
+			Luz_gTER_Lavabo_Teto.sendCommand(OFF)
+		}
+	}	
+	
+	if (command.contains("brinquedo"))
+	{
+		if (command.contains("acender"))
+		{
+			Luz_gTER_Brinquedo_Teto.sendCommand(ON)
+		}
+		
+		if (command.contains("apagar"))
+		{
+			Luz_gTER_Brinquedo_Teto.sendCommand(OFF)
+		}
+	}	
+	
+	
+end

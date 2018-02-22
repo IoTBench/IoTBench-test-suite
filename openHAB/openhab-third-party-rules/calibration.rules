@@ -1,0 +1,29 @@
+// OpenHAB rules for adjusting values
+//
+// These rules are ONLY to adjust sensor readings, when required.
+// NO automation or triggers should be included here!
+
+// Required libraries
+import org.openhab.core.library.types.*
+
+// The AeonLabs multisensor reported temperature in the living room
+// is corrected using a linear model
+rule "Adjust temperature Z-wave node 10"
+when
+	Item nSensor_Living_TempRaw received update
+then
+	var Number T = nSensor_Living_TempRaw.state as DecimalType
+	var Number temp = (1.6 * T) - 8.5
+	postUpdate(nSensor_Living_Temp, temp)
+end
+
+// The AeonLabs multisensor reported temperature on the first floor
+// is corrected using a linear model
+rule "Adjust temperature Z-wave node 12"
+when
+	Item nSensor_FirstFl_TempRaw received update
+then
+	var Number T = nSensor_FirstFl_TempRaw.state as DecimalType
+	var Number temp = (1.25 * T) - 3.3
+	postUpdate(nSensor_FirstFl_Temp, temp)
+end

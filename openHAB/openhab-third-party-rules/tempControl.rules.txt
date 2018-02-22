@@ -1,0 +1,20 @@
+rule "Update Temperature Min- and Max values"
+    when
+    	Item  Temperature_Garden received update
+    then
+    	var Number Min
+    	var Number Max
+    	var String tmp
+    	var SimpleDateFormat df = new SimpleDateFormat( "HH:mm" ) 
+     	
+     	if (Temperature_Garden.state instanceof DecimalType) {
+    		Min = (Temperature_Garden.minimumSince(now.toDateMidnight, "rrd4j").state as DecimalType)
+    		tmp = (Math::round(Min.floatValue*10.0)/10.0) + " °C (" + df.format(Temperature_Garden.minimumSince(now.toDateMidnight, "rrd4j").timestamp) + " )"
+    		postUpdate(Temperature_Garden_Min_Formatted, tmp)
+    		
+    		Max = Temperature_Garden.maximumSince(now.toDateMidnight, "rrd4j").state as DecimalType
+    		df = new SimpleDateFormat( "HH:mm" ) 
+    		tmp = (Math::round(Max.floatValue*10.0)/10.0) + " °C (" + df.format(Temperature_Garden.maximumSince(now.toDateMidnight, "rrd4j").timestamp) + ")"
+    		postUpdate(Temperature_Garden_Max_Formatted, tmp)
+    	}
+    end

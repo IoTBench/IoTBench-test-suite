@@ -1,0 +1,44 @@
+var Timer TOF_IR_Zona6 = null
+
+ 
+rule "TOF Zona6"
+when
+  	Item gJFL_Zona06 changed to ON
+then
+	gJFL_IRGaragem.sendCommand(ON)
+	if(TOF_IR_Zona6 == null || TOF_IR_Zona6.hasTerminated) 
+	{
+		TOF_IR_Zona6 = createTimer(now.plusSeconds(30), [|
+			TOF_IR_Zona6 = null
+            gJFL_IRGaragem.sendCommand(OFF)
+        ])
+    }
+end 
+
+/******************************************************************** Acender fachada de sensor de presenca hall garagem **************************************************************************/
+
+
+rule "Acender fachada pelo IR JFL"
+when
+  	Item gJFL_Zona06 changed to ON
+then
+	if(NightState.state == ON && (now.getHourOfDay >= 17 || now.getHourOfDay <= 6))
+	{
+		Luz_gTER_Frente_Hall.sendCommand(ON)
+		Luz_gTER_Frente_TetoGaragem.sendCommand(ON)
+		
+		if (now.getHourOfDay >= 17)
+		{
+			Luz_gTER_Frente_ArandelaGaragem.sendCommand(ON)
+			Luz_gTER_SalaEstar_Hall.sendCommand(ON)
+			Luz_gTER_Cozinha_Teto.sendCommand(ON)
+			Luz_gTER_Varanda_Teto.sendCommand(ON)
+			Luz_gTER_Jantar_Teto.sendCommand(ON)
+			Luz_gTER_SalaTV_Teto.sendCommand(ON)
+			Luz_gTER_SalaEstar_Escada.sendCommand(ON)
+		}
+    }
+end
+
+/******************************************************************** Desligar detecção de movimento da Zona6 após XX segundos **************************************************************************/
+

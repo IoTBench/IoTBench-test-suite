@@ -1,0 +1,18 @@
+
+/******************************************************************** Mathues saindo e chegando em casa **************************************************************************/
+/*
+rule "Matheus chegando em casa"
+when
+  	Item EmCasa_Matheus2 changed to ON
+then
+	sendNotification("botura@gmail.com", "Chegando em casa") 
+end
+
+
+rule "Matheus saindo de casa"
+when
+  	Item EmCasa_Matheus2 changed to OFF
+then
+	sendNotification("botura@gmail.com", "Saindo de casa") 
+end
+*/

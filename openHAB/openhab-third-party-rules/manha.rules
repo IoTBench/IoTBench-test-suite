@@ -1,0 +1,53 @@
+
+
+rule "Acende luzes de baixo ao acender a escada"
+when
+    Item Luz_gSUP_Escada changed from OFF to ON
+then
+//    if(SunElevation.state as DecimalType >  0)
+	if (now.getHourOfDay <= 7)
+    {
+    	Luz_gTER_SalaTV_Teto.sendCommand(ON)
+    	Luz_gTER_Jantar_Teto.sendCommand(ON)
+    	Luz_gTER_Cozinha_Teto.sendCommand(ON)
+    	Luz_gTER_Varanda_Teto.sendCommand(ON)
+    }
+end
+
+
+rule "Apaga todas as luzes de baixo ao apagar a sala ou cozinha"
+when
+    Item Luz_gTER_SalaTV_Teto changed from ON to OFF or
+    Item Luz_gTER_Jantar_Teto changed from ON to OFF or
+    Item Luz_gTER_Cozinha_Teto changed from ON to OFF
+then
+	if (now.getHourOfDay >= 7 && now.getHourOfDay <= 9)
+    {
+    	gTerreo.sendCommand(OFF)
+    }
+end
+
+
+rule "Apaga a luz da churrasqueira as 7:00"
+when
+	Time cron "0 0 7 1/1 * ? *"
+then
+	Luz_gTER_Varanda_Teto.sendCommand(OFF)
+	Luz_gSUP_Escada.sendCommand(OFF)
+end
+
+
+rule "Apaga todas as luzes do terreo as 7:30"
+when
+	Time cron "0 30 7 1/1 * ? *"
+then
+	gTerreo.sendCommand(OFF)
+end
+
+
+rule "Apaga todas as luzes da casa as 8:00 de 2a a 6a"
+when
+	Time cron "0 0 8 ? * MON,TUE,WED,THU,FRI *"
+then
+	gLuzes.sendCommand(OFF)
+end

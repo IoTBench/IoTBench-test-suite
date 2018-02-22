@@ -1,0 +1,8 @@
+/******************************************************************** Spot da sala de estar **************************************************************************/
+
+rule "Spot da sala de estar mudou" 
+when 
+Item Luz_gTER_SalaEstar_SpotEscada changed
+then
+	Luz_gTER_SalaEstar_SpotArandela.sendCommand(Luz_gTER_SalaEstar_SpotEscada.state.toString)
+end

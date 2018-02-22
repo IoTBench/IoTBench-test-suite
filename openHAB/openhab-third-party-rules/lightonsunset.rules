@@ -1,0 +1,100 @@
+//
+import java.awt.Color
+import org.joda.time.DateTime
+import org.openhab.core.library.types.*
+
+var LIGHT_ON = "100"
+var LIGHT_DIMMED = "50"
+var LIGHT_OFF = "0"
+var SUNSET_OFFSET = 55 // turn on lights N minutes before actual sunset
+
+var BEDROOM_LIGHT = "Bedroom_Brightness"
+var LIVING_ROOM_LIGHT = "LivingRoom_Brightness"
+
+/*rule "every_second_test"
+when
+    //Item LocalTime_Date changed
+    Time cron "* * * * * ?"  // on 15s of every minute
+then
+    var PercentType bright = LivingRoom_Brightness.state
+    
+    logInfo("light null", "percent = {}", bright);
+
+    if (bright < 100) {
+        logInfo("light", "brightness less than 100")
+    }
+
+end*/
+
+// Dim the lights at night
+rule "lights_on_at_night"
+when
+    // http://www.quartz-scheduler.org/documentation/quartz-1.x/tutorials/crontrigger
+    // 22 == 10 pm
+    // 23 == 11 pm
+    Time cron "0 40 22 * * ?"  // 10:30 pm
+then
+    // only dim the lights if the current light brightness value
+    // is greater than what it should be when dimmed
+    var PercentType bright = LivingRoom_Brightness.state
+    //if (bright > LIGHT_DIMMED) {
+    //    logInfo("lights_on_at_night", "night time, dimming!!")
+    //    sendCommand(BEDROOM_LIGHT, LIGHT_DIMMED)
+    //    sendCommand(LIVING_ROOM_LIGHT, LIGHT_DIMMED)
+    //}
+end
+
+// Dim the lights at night, unless TV is on
+rule "lights_off_at_night"
+when
+    // http://www.quartz-scheduler.org/documentation/quartz-1.x/tutorials/crontrigger
+    Time cron "0 00 2 * * ?"  // 2 am
+then
+    var curr_state = HarmonyHub_CurrentActivity.state
+    if(curr_state == "PowerOff") {
+        sendCommand(BEDROOM_LIGHT, LIGHT_OFF)
+        sendCommand(LIVING_ROOM_LIGHT, LIGHT_OFF)
+    }
+end
+
+// Thing == Item (name)
+// ntp:ntp:local:string == LocalTime_Date
+// astro:sun:local:set#end == LocalSun_Set_EndTime
+rule "lights_on_sunset"
+when
+    //Item LocalTime_Date changed
+    Time cron "0/30 * * * * ?"  // on 15s of every minute
+then
+    // parse the current date
+    var DateTime curr_date = new DateTime()
+
+    // parse the sunset time, so we can compare
+    var ss_str = LocalSun_Set_EndTime.state.toString()
+    var DateTime sunset_date = new DateTime(ss_str)
+    var DateTime sunset_offset = sunset_date.minusMinutes(30)
+
+    var cdh = curr_date.getHourOfDay()
+    var cdm = curr_date.getMinuteOfHour()
+    var lodh = sunset_offset.getHourOfDay()
+    var lodm = sunset_offset.getMinuteOfHour()
+
+    //logInfo("light_on_sunset", "current_time = " + curr_date)
+    //logInfo("light_on_sunset", "sunset_offset = " + sunset_offset)
+    //logInfo("sunset", "comp (" + cdh + "==" + lodh + ", " + cdm + "==" + lodm + ")")
+
+    if(cdh == lodh && cdm == lodm) {
+        logInfo("light_on_sunset", "Detected sunset, turning on the lights!")
+        sendCommand(LIVING_ROOM_LIGHT, LIGHT_ON)
+    }
+end
+
+// when the harmony hub is in a powered off state, turn out the living room light
+rule "harmony_off_lights_off"
+when
+    Item HarmonyHub_CurrentActivity changed
+then
+    var curr_state = HarmonyHub_CurrentActivity.state
+    if(curr_state == "PowerOff") {
+        sendCommand(LIVING_ROOM_LIGHT, LIGHT_OFF)
+    }
+end

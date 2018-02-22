@@ -1,0 +1,95 @@
+
+/////////// Thais
+rule "Comando na janela do Thais" 
+when 
+	Item JanelaThais received command
+then
+	if (receivedCommand == UP)
+	{
+		AbrirJanelaThais.sendCommand(ON)
+	}
+	else if (receivedCommand == DOWN)
+	{
+		FecharJanelaThais.sendCommand(ON)
+	}
+	else
+	{
+		PararJanelaThais.sendCommand(ON)
+	}
+end
+
+
+/////////// Fafa
+rule "Comando na janela do Fafa" 
+when 
+	Item JanelaFafa received command
+then
+	if (receivedCommand == UP)
+		AbrirJanelaFafa.sendCommand(ON)
+	else if (receivedCommand == DOWN)
+		FecharJanelaFafa.sendCommand(ON)
+	else
+		PararJanelaFafa.sendCommand(ON)
+end
+
+
+/////////// Thig
+rule "Comando na janela do Thig" 
+when 
+	Item JanelaThig received command
+then
+	if (receivedCommand == UP)
+		AbrirJanelaThig.sendCommand(ON)
+	else if (receivedCommand == DOWN)
+		FecharJanelaThig.sendCommand(ON)
+	else
+		PararJanelaThig.sendCommand(ON)
+end
+
+
+/////////// Todas as janelas
+rule "Comando em todas as janelas" 
+when 
+	Item Janelas received command
+then
+	if (receivedCommand == UP)
+	{
+		AbrirJanelaThais.sendCommand(ON)
+		AbrirJanelaFafa.sendCommand(ON)
+		AbrirJanelaThig.sendCommand(ON)
+	}
+	else if (receivedCommand == DOWN)
+	{
+		FecharJanelaThais.sendCommand(ON)
+		FecharJanelaFafa.sendCommand(ON)
+		FecharJanelaThig.sendCommand(ON)
+	}
+	else
+	{
+		PararJanelaThais.sendCommand(ON)
+		PararJanelaFafa.sendCommand(ON)
+		PararJanelaThig.sendCommand(ON)
+	}
+end
+
+
+// Site cron: www.cronmaker.com
+///////////////////////////////// Fecha as janelas 4a e 5a feira as 08:00
+rule "Fecha as janelas de 4a e 5a feira as 8:00"
+when 
+	Time cron "0 0 8 ? * WED,THU *"
+then
+	Janelas.sendCommand(DOWN)
+end
+
+
+
+///////////////////////////////// Abre as janelas 2a a 6a feira as 06:30
+rule "Abre as janelas de 2a a 6a feira as 6:30"
+when 
+	Time cron "0 0 6 ? * MON,TUE,WED,THU,FRI *"
+then
+	Janelas.sendCommand(UP)
+	Luz_gSUP_Thig_Banheiro_Pia.sendCommand(OFF)
+end
+

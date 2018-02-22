@@ -1,0 +1,14 @@
+/******************************************************************** Luz da Escada **************************************************************************/
+
+rule "Luz da Sala TV 1 superior mudou" 
+when 
+Item Luz_gSUP_Casal_Escritorio1 changed
+then
+	Luz_gSUP_Casal_Escritorio2.sendCommand(Luz_gSUP_Casal_Escritorio1.state.toString)
+end
+
+
+rule "Luz da Sala TV 2 superior mudou" when Item Luz_gSUP_Casal_Escritorio2 changed
+then
+	Luz_gSUP_Casal_Escritorio1.sendCommand(Luz_gSUP_Casal_Escritorio2.state.toString)
+end

@@ -1,0 +1,12 @@
+/******************************************************************** Luz sa fachada **************************************************************************/
+
+rule "Luz da fachada mudou" 
+when 
+Item Luz_gTER_Frente_ArandelaGaragem changed
+then
+	Luz_gTER_Frente_MuroServico.sendCommand(Luz_gTER_Frente_ArandelaGaragem.state.toString)
+	Luz_gTER_Frente_BayWindowInf.sendCommand(Luz_gTER_Frente_ArandelaGaragem.state.toString)
+	Luz_gTER_Frente_BayWindowSup.sendCommand(Luz_gTER_Frente_ArandelaGaragem.state.toString)
+	Luz_gTER_Frente_Beiral.sendCommand(Luz_gTER_Frente_ArandelaGaragem.state.toString)
+	Luz_gTER_Frente_MuroGaragem.sendCommand(Luz_gTER_Frente_ArandelaGaragem.state.toString)
+end

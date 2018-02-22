@@ -1,0 +1,191 @@
+// OpenHAB rules for automatic light switches
+//
+// These rules define the automation of lights, e.g. turn on lights at sunset
+// or turn off lights when nobody is home. 
+//
+// NOTE: lights and lightscenes may also be controlled by other triggers
+// such as motion and alarms in the respective rule files. Lightscenes are
+// defined in 'lightscenes.rules'.
+
+// Required libraries
+import org.openhab.core.library.types.*
+
+// Used constants for status codes
+// as in ../transform/presence.map
+val Number UNKNOWN = 0
+val Number HOME = 1
+val Number CAMEHOME = 2
+val Number AWAKE = 3
+val Number TOBED = 4
+val Number ASLEEP = 5
+val Number NOBODYHOME = 6
+val Number AWAY = 7
+
+// Used constants for light scene codes
+// as in ../transform/lightscenes.map
+val Number LIGHTSOFF = 0
+val Number LIGHTSNORMAL = 1
+val Number LIGHTSDIMMED = 2
+val Number LIGHTSNOBODYHOME = 6
+
+// Hour of Day constants
+val Number MIDNIGHT = 0
+val Number EARLYMORNINGHOUR = 6
+val Number MORNINGHOUR = 8
+val Number LATEMORNINGHOUR = 10
+val Number BEDTIMEHOUR = 23
+
+// *****************************
+// Lights to switch on at sunset
+rule "Switch lights on at sunset"
+when
+	// Every day at sunset
+	Item sSunset_Event changed to ON
+then
+	// Turn on outdoor lights
+	logInfo("Lights", "Turning ON the front door light at sunset.")
+	sendCommand(sLight_FrontDoor, ON)
+	// Normal ground and first floor lights
+	logInfo("Lights", "Turning ON the indoor lights at sunset.")
+	sendCommand(nScene_GF_Lights, LIGHTSNORMAL)
+	sendCommand(nScene_FF_Lights, LIGHTSNORMAL)
+end
+
+// *******************************
+// Switch off lights late at night
+
+// **** Home and gone to bed or asleep
+// Switch off ground floor lights when to bed
+rule "Switch off GF lights when to bed"
+when
+	Item nStatus_Presence changed to 4
+then
+	// Turn off ground floor lights
+	logInfo("Lights", "Turning OFF ground floor lights, because everybody seems to bed.")
+	sendCommand(nScene_GF_Lights, LIGHTSOFF)
+	// Turn on outdoor lights 
+	if (sNight.state == ON) {
+		logInfo("Lights", "Turning ON outdoor lights while everybody seems to bed.")
+		sendCommand(sLight_FrontDoor, ON)
+		sendCommand(sLight_GardenDoor, ON)
+	}
+end
+// Switch off indoor lights when asleep
+rule "Switch off indoor lights when to bed"
+when
+	Item nStatus_Presence changed to 5
+then
+	// Turn off indoor lights
+	logInfo("Lights", "Turning OFF indoor lights, because everybody seems to sleep.")
+	sendCommand(nScene_GF_Lights, LIGHTSOFF)
+	sendCommand(nScene_FF_Lights, LIGHTSOFF)
+end
+
+// **** Nobody home
+// Switch off ground floor lights when nobody home
+rule "Switch off GF lights when nobody home"
+when
+	// Every day at 23:36 hrs
+	Time cron "0 36 23 * * ?"
+then
+	// If nobody home or away
+	if (nStatus_Presence.state == NOBODYHOME
+	 || nStatus_Presence.state == AWAY
+	 || nStatus_Presence.state == UNKNOWN) {
+		// Turn off ground floor lights
+		logInfo("Lights", "Turning OFF the ground floor lights, because it is late in the evening and nobody seems home.")
+		sendCommand(nScene_GF_Lights, LIGHTSOFF)
+		// Turn on first floor lights
+		logInfo("Lights", "Turning ON the first floor lights while nobody seems home.")
+		sendCommand(nScene_FF_Lights, LIGHTSNOBODYHOME)
+		// Turn on outdoor lights
+		logInfo("Lights", "Turning ON the outdoor lights while nobody seems home.")
+		sendCommand(sLight_FrontDoor, ON)
+		sendCommand(sLight_GardenDoor, ON)
+	}
+end
+
+// Switch off first floor lights when nobody home
+rule "Switch off FF lights when nobody home"
+when
+	// Every day at 23:55 hrs
+	Time cron "0 55 23 * * ?"
+then
+	// If nobody home or away
+	if (nStatus_Presence.state == NOBODYHOME
+	 || nStatus_Presence.state == AWAY
+	 || nStatus_Presence.state == UNKNOWN) {
+		// Turn off indoor lights
+		logInfo("Lights", "Turning OFF first floor lights, because it is late in the evening and nobody seems home.")
+		sendCommand(nScene_FF_Lights, LIGHTSOFF)
+	}
+end
+
+// Make sure lights go off when nobody home anymore
+rule "Switch off lights when nobody home after midnight"
+when
+	Item nStatus_Presence changed to 6 or
+	Item nStatus_Presence changed to 7
+then
+	// current Hour of Day
+	var currentHour = now.getHourOfDay
+	
+	if (currentHour < EARLYMORNINGHOUR) {
+		// Turn off indoor lights
+		logInfo("Lights", "Turning OFF indoor lights, because nobody is home early in the morning.")
+		sendCommand(nScene_GF_Lights, LIGHTSOFF)
+		sendCommand(nScene_FF_Lights, LIGHTSOFF)
+	}
+
+	if (sNight.state == OFF) {
+		// Turn off all lights
+		logInfo("Lights", "Turning OFF all lights, because nobody is home at day time.")
+		sendCommand(nScene_GF_Lights, LIGHTSOFF)
+		sendCommand(nScene_FF_Lights, LIGHTSOFF)
+		sendCommand(sLight_FrontDoor, OFF)
+		sendCommand(sLight_GardenDoor, OFF)
+	}
+end
+
+// *******************************
+// Lights to switch off at sunrise
+rule "Switch lights off at sunrise"
+when
+	// Every day at sunrise
+	Item sSunrise_Event changed to ON
+then
+	// Turn off outdoor lights
+	logInfo("Lights", "Turning OFF the outdoor lights at sunrise.")
+	sendCommand(sLight_FrontDoor, OFF)
+	sendCommand(sLight_GardenDoor, OFF)
+	// Turn off indoor lights if no motion
+	if(cSensor_Living_Motion.state == CLOSED) {
+		logInfo("Lights", "Turning OFF the ground floor lights at sunrise, because no motion downstairs.")
+		sendCommand(nScene_GF_Lights, LIGHTSOFF)
+	}
+	if(cSensor_FirstFl_Motion.state == CLOSED) {
+		logInfo("Lights", "Turning OFF the first floor lights at sunrise, because no motion upstairs.")
+		sendCommand(nScene_FF_Lights, LIGHTSOFF)
+	}
+end
+
+// ***********************************************
+// Set chrismas tree on fire on movement or sunset
+rule "Switch on xmas tree"
+when
+	Item cSensor_Living_Motion changed to OPEN or
+	Item sSunset_Event changed to ON
+then
+	//logInfo("Lights", "Turned ON the christmas tree, because of movement or sunset.")
+	sendCommand(sLight_Xmastree, ON)
+end
+
+// Switch on X-mas tree in afternoon
+//rule "Switch on X-mas tree"
+//when
+//	// Every day at 15:30 hrs
+//	Time cron "0 30 15 * * ?"
+//then
+//	// logInfo("Lights", "Turning ON the X-mas tree at 15:30 hrs.")
+//	sendCommand(sLight_Xmastree, ON)
+//end

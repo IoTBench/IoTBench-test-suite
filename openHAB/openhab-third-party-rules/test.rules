@@ -1,0 +1,26 @@
+// OpenHAB rules for testing
+// Rename this .rules file to disable these rules for normal operation
+import org.openhab.core.library.types.*
+import org.openhab.core.persistence.*
+import org.openhab.model.script.actions.*
+import org.joda.time.*
+
+// Trigger events on test switch
+//rule "TEST Switch 2 ON"
+//when
+//	Item sTEST_DummySwitch_02 changed to ON
+//then
+//	sendCommand(sTEST_DummySwitch_02, OFF)
+//	var Number T = nSensor_FirstFl_TempRaw.state as DecimalType
+//	var Number temp = (1.5 * T) - 7.5
+//	postUpdate(nSensor_FirstFl_Temp, temp)
+//end
+
+// Simulate sunset every day at 20:00 hrs
+//rule "TEST Simulate sunset"
+//when
+//	Time cron "0 0 20 * * ?"
+//then
+//	postUpdate(sSunset_Event,ON)
+//	postUpdate(sSunset_Event,OFF)
+//end
