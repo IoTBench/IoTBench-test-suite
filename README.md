@@ -34,26 +34,18 @@ The apps include various malicious behaviors. Here, we present the apps in *smar
 This folder currently includes 19 hand-crafted malicious SmartThings apps that contain data leaks. Sixteen apps have a single data leak, and three have multiple data leaks; a total of 27 data leaks via either Internet and messaging service sinks. We carefully crafted the apps based on official and third-party apps. They include data leaks whose accurate identification through program analysis would require solving problems including *multiple entry points*, *state variables*, *call by reflection*, and *field sensitivity*. Each app comes with ground truth of what data leaks are in the app; this is provided as comment blocks in the app's source code.
 
 ### Will you add more IoT apps?
-Yes, definitely. We start crawling OpenHAB, and its apps will be included very soon. Additionally, you can submit IoT apps whether benign or malicious to **IoTBench**.
+Yes, definitely. We start crawling OpenHAB apps (rules), and the apps will be included very soon. Additionally, you can submit IoT apps whether benign or malicious to **IoTBench**.
 
-### Can I contribute IoT apps to IoTBench?
-Contributions are welcomed! You can contribute additional test cases to **IoTBench**. We ask that:
+### Can I contribute IoT apps to **IoTBench**?
+Contributions are welcomed! To contribute additional test cases to **IoTBench**, we ask that:
 - To fork the project, commit apps along with descriptions (similar to Table 3 in the Appendix of SainT paper) and update this README and then send us a pull request. 
 - If you have any questions, please send to [Z. Berkay Celik](https://beerkay.github.io/) 
 
 ### How can I cite **IoTBench**?
 
- In general for IoTBench:
+ In general for **IoTBench**:
 
-> Saint bib file
-
-ContexIoT apps:
-> @inproceedings{jia2017contexiot,
-  title={ContexIoT: Towards providing contextual integrity to appified IoT platforms},
-  author={Jia, Yunhan Jack and Chen, Qi Alfred and Wang, Shiqi and Rahmati, Amir and Fernandes, Earlence and Mao, Z Morley and Prakash, Atul and University, Shanghai JiaoTong},
-  booktitle={Network and Distributed System Security Symposium (NDSS)},
-  year={2017}
-}
+> Saint bib file will be updated soon.
 
 ## Authors
 This repo is managed and maintained by [Z. Berkay Celik](https://beerkay.github.io/) (zbc102@cse.psu.edu).
