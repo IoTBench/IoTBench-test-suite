@@ -26,7 +26,7 @@ In late 2017, we acquired the official apps from the official [SmartThings Githu
 
         > Currently waiting for a response from authors to include the contexIoT apps in **IoTBench**.
 
-- The following folders include apps under *openHAB* folde designed for [**OpenHAB**](https://www.openhab.org/) IoT platform.
+- The following folders include apps under *openHAB* folder designed for [**OpenHAB**](https://www.openhab.org/) IoT platform.
      - **openhab-third-party-rules**: This folder includes the apps downloaded by crawling the GitHub openHAB open-source projects. 
 
 ### What kind of malicious behavior **IoTBench** apps contain?
