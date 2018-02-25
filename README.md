@@ -52,7 +52,7 @@ Eprint = {arXiv:2173068},
 ```
 
 ## Authors
-This repo is managed and maintained by [Z. Berkay Celik](https://beerkay.github.io/) (zbc102@cse.psu.edu).
+This repo is managed and maintained by [Z. Berkay Celik](https://beerkay.github.io/)
 
 We would like to thank, among others, the following  authors contributed IoT apps (ordered according to the GitHub contributors page):
 - [Z. Berkay Celik](https://beerkay.github.io/) (Penn State University)
