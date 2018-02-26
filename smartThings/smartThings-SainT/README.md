@@ -12,7 +12,8 @@
 Author = {Z. Berkay Celik, Leonardo Babun and others},
 Title = {Sensitive Information Tracking in Commodity IoT},
 Year = {2018},
-Eprint = {arXiv:2173068},
+Eprint = {arXiv:1802.08307},
+howpublished = "\url{https://arxiv.org/abs/1802.08307}"
 }
 ```
 
