@@ -24,7 +24,7 @@ In late 2017, we acquired the official apps from the official [SmartThings Githu
 
         > List of malicious behaviors: You can find the list of apps in the source code of the app's definition blocks in [contexiot web page](https://sites.google.com/site/iotcontextualintegrity/home).
 
-- The following folders include apps under *openHAB* folder designed for [**OpenHAB**](https://www.openhab.org/) IoT platform.
+- The following folder include apps under *openHAB* <img src="https://raw.github.com/secure-software-engineering/DroidBench/develop/new.gif"/> folder designed for [**OpenHAB**](https://www.openhab.org/) IoT platform.
      - **openhab-third-party-rules**: This folder includes the apps downloaded by crawling the GitHub openHAB open-source projects. 
 
 ### What kind of malicious behavior **IoTBench** apps contain?
