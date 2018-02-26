@@ -20,11 +20,9 @@ In late 2017, we acquired the official apps from the official [SmartThings Githu
     - **smartThings-sensitive-data-leaks**: This folder includes 19 different malicious apps that contain test cases for interesting flow analysis problems as well as for IoT-specific challenges. These apps are developed for the purpose of evaluating the SainT static taint tracking system. These apps can be used to evaluate both static and dynamic taint analysis tools designed for SmartThings apps; It enables assessing a tool's accuracy and effectiveness through the ground truths included in the suite.
         > **List of sensitive data leaks:** You can find a full list of the data leaks along with their definitions in the Appendix of [SainT paper](http://arxiv.org/).
 
-    - **smartThings-contexIoT:** This folder will include contexIoT SmartThings apps that are used in [ContexIoT: Towards Providing Contextual Integrity to Appified IoT Platforms (NDSS'17)](http://earlence.com/assets/papers/contexiot_ndss17.pdf). These apps include IoT-specific attacks and attacks migrated from mobile phone research. The details of the apps can be found in the paper.
+    - **smartThings-contexIoT:** <img src="https://raw.github.com/secure-software-engineering/DroidBench/develop/new.gif"/> This folder will include contexIoT SmartThings apps that are used in [ContexIoT: Towards Providing Contextual Integrity to Appified IoT Platforms (NDSS'17)](http://earlence.com/assets/papers/contexiot_ndss17.pdf). These apps include IoT-specific attacks and attacks migrated from mobile phone research. The details of the apps can be found in the paper.
 
         > List of malicious behaviors: You can find the list of apps in the source code of the app's definition blocks in [contexiot web page](https://sites.google.com/site/iotcontextualintegrity/home).
-
-        > Currently waiting for a response from authors to include the contexIoT apps in **IoTBench**.
 
 - The following folders include apps under *openHAB* folder designed for [**OpenHAB**](https://www.openhab.org/) IoT platform.
      - **openhab-third-party-rules**: This folder includes the apps downloaded by crawling the GitHub openHAB open-source projects. 
@@ -57,6 +55,7 @@ This repo is managed and maintained by [Z. Berkay Celik](https://beerkay.github.
 We would like to thank, among others, the following  authors contributed IoT apps (ordered according to the GitHub contributors page):
 - [Z. Berkay Celik](https://beerkay.github.io/) (Penn State University)
 - [Leo Babun](http://leobabun.wixsite.com/leo-babun-phd) (Florida International University)
+- [Yunhan Jia] (http://web.eecs.umich.edu/~jackjia/) (Michigan University)
 - Amit Kumar Sikder (Florida International University)
 - (Your name)
 
