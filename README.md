@@ -20,11 +20,11 @@ In late 2017, we acquired the official apps from the official [SmartThings Githu
     - **smartThings-sensitive-data-leaks**: This folder includes 19 different malicious apps that contain test cases for interesting flow analysis problems as well as for IoT-specific challenges. These apps are developed for the purpose of evaluating the SainT static taint tracking system and can be used to evaluate both static and dynamic taint analysis tools designed for SmartThings apps; It enables assessing a tool's accuracy and effectiveness through the ground truths included in the suite.
         > **List of sensitive data leaks:** You can find a full list of the data leaks along with their definitions in the Appendix of [SainT paper](https://arxiv.org/abs/1802.08307).
 
-    - **smartThings-contexIoT:**<img src="https://raw.github.com/secure-software-engineering/DroidBench/develop/new.gif"/> This folder  includes contexIoT SmartThings apps that are used in [ContexIoT: Towards Providing Contextual Integrity to Appified IoT Platforms (NDSS'17)](http://earlence.com/assets/papers/contexiot_ndss17.pdf). The folder also includes IoT-specific attacks and attacks migrated from mobile phone research. The details of the apps can be found in the paper.
+    - <img src="https://raw.github.com/secure-software-engineering/DroidBench/develop/new.gif"/> **smartThings-contexIoT:** This folder  includes contexIoT SmartThings apps that are used in [ContexIoT: Towards Providing Contextual Integrity to Appified IoT Platforms (NDSS'17)](http://earlence.com/assets/papers/contexiot_ndss17.pdf). The folder also includes IoT-specific attacks and attacks migrated from mobile phone research. The details of the apps can be found in the paper.
 
         > List of malicious behaviors: You can find the list of apps in the source code of the app's definition blocks in [contexiot web page](https://sites.google.com/site/iotcontextualintegrity/home).
 
-- The following folder include apps under *openHAB* <img src="https://raw.github.com/secure-software-engineering/DroidBench/develop/new.gif"/> folder designed for [**OpenHAB**](https://www.openhab.org/) IoT platform.
+- <img src="https://raw.github.com/secure-software-engineering/DroidBench/develop/new.gif"/> The following folder include apps under *openHAB* folder designed for [**OpenHAB**](https://www.openhab.org/) IoT platform.
      - **openhab-third-party-rules**: This folder includes the apps downloaded by crawling the GitHub openHAB open-source projects. 
 
 ### What kind of malicious behavior **IoTBench** apps contain?
