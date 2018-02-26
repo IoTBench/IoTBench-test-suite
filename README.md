@@ -18,7 +18,7 @@ In late 2017, we acquired the official apps from the official [SmartThings Githu
 
 - The following folders include malicious apps under *smartThings* folder designed for [**SmartThings**](https://www.smartthings.com/) platform.
     - **smartThings-sensitive-data-leaks**: This folder includes 19 different malicious apps that contain test cases for interesting flow analysis problems as well as for IoT-specific challenges. These apps are developed for the purpose of evaluating the SainT static taint tracking system. These apps can be used to evaluate both static and dynamic taint analysis tools designed for SmartThings apps; It enables assessing a tool's accuracy and effectiveness through the ground truths included in the suite.
-        > **List of sensitive data leaks:** You can find a full list of the data leaks along with their definitions in the Appendix of [SainT paper](http://arxiv.org/).
+        > **List of sensitive data leaks:** You can find a full list of the data leaks along with their definitions in the Appendix of [SainT paper](https://arxiv.org/abs/1802.08307).
 
     - **smartThings-contexIoT:**<img src="https://raw.github.com/secure-software-engineering/DroidBench/develop/new.gif"/> This folder  includes contexIoT SmartThings apps that are used in [ContexIoT: Towards Providing Contextual Integrity to Appified IoT Platforms (NDSS'17)](http://earlence.com/assets/papers/contexiot_ndss17.pdf). The folder also includes IoT-specific attacks and attacks migrated from mobile phone research. The details of the apps can be found in the paper.
 
@@ -45,7 +45,8 @@ Contributions are welcomed! To contribute additional test cases to **IoTBench**,
 Author = {Z. Berkay Celik, Leonardo Babun and others},
 Title = {Sensitive Information Tracking in Commodity IoT},
 Year = {2018},
-Eprint = {arXiv:2173068},
+Eprint = {arXiv:1802.08307},
+howpublished = "\url{https://arxiv.org/abs/1802.08307}"
 }
 ```
 
