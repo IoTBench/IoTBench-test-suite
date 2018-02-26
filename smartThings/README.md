@@ -1,15 +1,8 @@
 ![alt text](http://i68.tinypic.com/25ut821.jpg)
 
-# SainT SmartThings IoT apps
+# SmartThings IoT apps
 
-**smartThings-contexIoT** folder contains SmartThings official and third-party apps obtained early 2016. Additionally, it includes benchmark apps for malicious app analysis.
+This  folder contains apps used in the following papers
+- Celik, Z. Berkay, et al. "Sensitive Information Tracking in Commodity IoT", arXiv:2173068, 2018 
+- Jia, Yunhan Jack, et al. "ContexIoT: Towards providing contextual integrity to appified IoT platforms." Proceedings of The Network and Distributed System Security Symposium (NDSS) 2017.
 
-## Citing this work
-``` 
-@inproceedings{jia2017contexiot,
-  title={ContexIoT: Towards providing contextual integrity to appified IoT platforms},
-  author={Jia, Yunhan Jack and others},
-  booktitle={Network and Distributed System Security Symposium (NDSS)},
-  year={2017}
-}
-```
