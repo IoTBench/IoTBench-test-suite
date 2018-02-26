@@ -1,6 +1,6 @@
 ![alt text](http://i68.tinypic.com/25ut821.jpg)
 
-# SainT SmartThings IoT apps
+# ContexIoT SmartThings IoT apps
 
 **smartThings-contexIoT** folder contains SmartThings official and third-party apps obtained **early 2016**. Additionally, it includes benchmark apps for malicious app analysis.
 
