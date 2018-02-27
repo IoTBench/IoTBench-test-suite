@@ -1,1 +1,1 @@
-This folder includes OpenHAB rules by crawling the GitHub pages. More rules will be added soon.
+A set of OpenHAB rules obtained by crawling the public GitHub pages. More rules will be added soon.
