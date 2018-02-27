@@ -4,7 +4,7 @@
 
 # IoTBench v1.0
 
-**IoTBench** repository contains IoT apps from various IoT platforms. **IoTBench** test-suite is under continual development, always welcoming contributions of the new IoT apps. In particular, we always welcome help towards resolving the issues currently open.
+**IoTBench** test-suite repository contains IoT apps from various IoT platforms. **IoTBench**  is under continual development, always welcoming contributions of the new IoT apps. In particular, we always welcome help towards resolving the issues currently open.
 
 ## What is IoTBench?
 
