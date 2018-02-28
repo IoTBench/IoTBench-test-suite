@@ -9,7 +9,8 @@
 ## Citing this work
 ``` 
 @misc{saint-taint-analysis,
-Author = {Z. Berkay Celik and Leonardo Babun and Amit K. Sikder and Hidayet Aksu and Gang Tan and Patrick McDaniel and A. Selcuk Uluagac},
+Author = {Z. Berkay Celik and Leonardo Babun and Amit K. Sikder and Hidayet Aksu and 
+Gang Tan and Patrick McDaniel and A. Selcuk Uluagac},
 Title = {Sensitive Information Tracking in Commodity IoT},
 Year = {2018},
 Eprint = {arXiv:1802.08307},
