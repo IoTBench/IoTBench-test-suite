@@ -7,7 +7,7 @@
 ## Citing this work
 ``` 
 @inproceedings{jia2017contexiot,
-  title={ContexIoT: Towards providing contextual integrity to appified IoT platforms},
+  title={Jia, Yunhan Jack and Chen, Qi Alfred and Wang, Shiqi and Rahmati, Amir and Fernandes, Earlence and Mao, Z Morley and Prakash, Atul and Unviersity, Shanghai JiaoTong},
   author={Jia, Yunhan Jack and others},
   booktitle={Network and Distributed System Security Symposium (NDSS)},
   year={2017}
