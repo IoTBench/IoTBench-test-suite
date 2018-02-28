@@ -8,7 +8,8 @@
 ``` 
 @inproceedings{jia2017contexiot,
   title={ContexIoT: Towards Providing Contextual Integrity to Appified IoT Platforms},
-  author={Jia, Yunhan Jack and Chen, Qi Alfred and Wang, Shiqi and Rahmati, Amir and Fernandes, Earlence and Mao, Z Morley and Prakash, Atul and Unviersity, Shanghai JiaoTong},
+  author={Jia, Yunhan Jack and Chen, Qi Alfred and Wang, Shiqi and Rahmati, Amir and Fernandes, 
+  Earlence and Mao, Z Morley and Prakash, Atul and Unviersity, Shanghai JiaoTong},
   booktitle={Network and Distributed System Security Symposium (NDSS)},
   year={2017}
 }
