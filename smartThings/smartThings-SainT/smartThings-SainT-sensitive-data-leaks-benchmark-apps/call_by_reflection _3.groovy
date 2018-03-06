@@ -6,7 +6,7 @@ definition(
     name: "Dynamic method invocation 3",
     namespace: "CSL",
     author: "Amit K Sikder",
-    updated: "Leo Babun",
+    updated: "Leo Babun and Z. Berkay Celik",
     description: "A string is used to invoke a method via call by reflection. A method is defined to leak mode of a user. Here in line 87, a variable is declared with current user mode defined in it. This string is leaked via sendSms command in line 88 and the sendSms function is in line 126",
     category: "Mode Magic",
     iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/App-LightUpMyWorld.png",

@@ -7,7 +7,7 @@ definition(
     name: "Call by reflection 2",
     namespace: "CSL",
     author: "Amit Sikder",
-    updated: "Leo Babun",
+    updated: "Leo Babun and Z. Berkay Celik",
     description: "A string is used to invoke a method via call by reflection. A method is defined to leak state of a door. In line 47, a string with the state of the door lock is sent via a hard-coded phone number. In line 68, sendSms function is defined.",
     category: "Safety & Security",
     iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience.png",

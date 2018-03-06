@@ -11,7 +11,7 @@ definition(
     name: "Hard-coded Information 2",
     namespace: "CSL",
     author: "Amit K Sikder",
-    updated: "Leo Babun"
+    updated: "Leo Babun and Z. Berkay Celik",
     description: "User contact information (e.g., Phone number) is hard-coded in the app and information leaked via hard-coded information. Hard-coded phone number is declared in line 117. A string message containing information defined by user (implicit permission to leak user input) is declared on line 116 and leaked via hard-coded phone number",
     category: "Mode Magic",
     iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/App-LightUpMyWorld.png",

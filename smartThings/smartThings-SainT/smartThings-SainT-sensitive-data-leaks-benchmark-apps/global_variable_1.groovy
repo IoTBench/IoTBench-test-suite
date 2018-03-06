@@ -6,7 +6,7 @@ definition(
     name: "Global Variable 1",
     namespace: "smartthings",
     author: "Amit K Sikder",
-    updated: "Leo Babun"
+    updated: "Leo Babun and Z. Berkay Celik",
     description: "Changes mode when motion ceases after a specific time of night. In this App a global variable is declared on line 121 which includes states of the device. This global variable is leaked via SendSms in line 183 via a hard-coded phone number",
     category: "Convenience",
     iconUrl: "https://s3.amazonaws.com/smartapp-icons/ModeMagic/good-night.png",

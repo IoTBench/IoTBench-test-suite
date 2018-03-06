@@ -7,7 +7,7 @@ definition(
 
     author: "Amit Sikder",
 
-    updated: "Leo Babun",
+    updated: "Leo Babun and Z. Berkay Celik",
 
     description: "The value of a variable is obtained via httpGet call dynamically and leaked via sinks. Code block from line 354 to line 400 implements httpGet command which parses a predefined camera list and camera parameter from a hard-coded URL. These parameters are used to take stealthy pictures and post this pictures in line 631 and 955",
 
