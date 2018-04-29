@@ -22,7 +22,7 @@ In late 2017, we acquired the official apps from the official [SmartThings Githu
 
     - <img src="https://raw.github.com/secure-software-engineering/DroidBench/develop/new.gif"/> **smartThings-contexIoT:** This folder includes ContexIoT SmartThings apps that are used in [ContexIoT: Towards Providing Contextual Integrity to Appified IoT Platforms (NDSS'17)](http://earlence.com/assets/papers/contexiot_ndss17.pdf). The folder also includes IoT-specific attacks and attacks migrated from mobile phone research. The details of the apps can be found in the paper.
 
-        > List of malicious behaviors: You can find the list of apps in the source code of the app's definition blocks and in the [contexIoT] paper(http://earlence.com/assets/papers/contexiot_ndss17.pdf).
+        > List of malicious behaviors: You can find the list of apps in the source code of the app's definition blocks and in the [contexIoT](http://earlence.com/assets/papers/contexiot_ndss17.pdf) paper.
 
     - <img src="https://raw.github.com/secure-software-engineering/DroidBench/develop/new.gif"/> **smartThings-Soteria:** This folder includes apps used in [Soteria: Automated IoT Safety and Security Analysis (USENIX ATC'18)](https://github.com/IoTBench/test-suite). The details of the apps can be found in the paper (will be available soon).
 
