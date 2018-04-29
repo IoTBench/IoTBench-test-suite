@@ -26,7 +26,7 @@ In late 2017, we acquired the official apps from the official [SmartThings Githu
 
     - <img src="https://raw.github.com/secure-software-engineering/DroidBench/develop/new.gif"/> **smartThings-Soteria:** This folder includes apps used in [Soteria: Automated IoT Safety and Security Analysis (USENIX ATC'18)](https://github.com/IoTBench/test-suite). The details of the apps can be found in the paper (will be available soon).
 
-- <img src="https://raw.github.com/secure-software-engineering/DroidBench/develop/new.gif"/> The following folder (/openHAB) includes apps designed for [**OpenHAB**](https://www.openhab.org/) IoT platform.
+- The following folder (/openHAB) includes apps designed for [**OpenHAB**](https://www.openhab.org/) IoT platform.
      - **openhab-third-party-rules**: This folder includes the apps downloaded by crawling the GitHub openHAB open-source projects. 
 
 ### What kind of malicious behavior **IoTBench** apps contain?
