@@ -47,7 +47,7 @@ Contributions are welcomed! To contribute additional test cases to **IoTBench**,
 @InProceedings{SaintIoTtaintAnalysisUsenixSec,
   Title                    = {ensitive Information Tracking in Commodity IoT},
   Author                   = {Z. Berkay Celik and Leonardo Babun and Amit K. Sikder and Hidayet Aksu and Gang Tan and Patrick McDaniel and A. Selcuk Uluagac},
-  Booktitle                = {USENIX Annual Technical Conference (USENIX ATC)},
+  Booktitle                = {USENIX Security},
   Year                     = {2018},
   howpublished = "\url{https://arxiv.org/abs/1802.08307}"
   Timestamp                = {2018.04.19}
