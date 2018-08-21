@@ -4,7 +4,7 @@
 
 # Soteria SmartThings IoT apps
 
-**smartThings-Soteria** folder contains SmartThings third-party apps and flawed apps used in Soteria analysis. The third-party apps are obtained in **mid 2017**.  The flawed apps contain property violations in an individual app and multi-app environments (referred as MalIoT test-suite in the Soteria paper).  The apps
+**smartThings-Soteria** folder contains SmartThings third-party apps and flawed apps used in Soteria analysis. The third-party apps are obtained in **mid 2017**.  The flawed apps contain property violations in an individual app and multi-app environments (referred as MalIoT test-suite in the Soteria paper).  
 
 ## Citing this work
 
