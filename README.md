@@ -14,7 +14,7 @@
 Currently, **IoTBench** has 236 official SmartThings apps (in smartthings-official folder) and 69 third-party SmartThings apps (in smartThings-third-party folder).
 In late 2017, we acquired the official apps from the official [SmartThings Github repo](https://github.com/SmartThingsCommunity/SmartThingsPublic), and the third-party apps are obtained by crawling the [official SmartThings community forum](https://community.smartthings.com/).
 
-**IoTBench** also includes malicious apps. These apps are designed for evaluating the proposed tools for data leaks and for finding the malicious behaviors. We categorize the malicious IoT apps as follows:
+**IoTBench** also includes malicious apps. These apps are designed for evaluating the proposed tools for data leaks and for finding the malicious behaviors. We categorize malicious IoT apps as follows:
 
 - The following folders include malicious apps under *smartThings* folder designed for [**SmartThings**](https://www.smartthings.com/) platform.
     - **smartThings-sensitive-data-leaks**: This folder includes 19 different malicious apps that contain test cases for interesting flow analysis problems as well as for IoT-specific challenges. These apps are developed for the purpose of evaluating the SainT static taint tracking system and can be used to evaluate both static and dynamic taint analysis tools designed for SmartThings apps; It enables assessing a tool's accuracy and effectiveness through the ground truths included in the suite.
