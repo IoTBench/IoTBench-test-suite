@@ -2,7 +2,7 @@
 
 # ContexIoT SmartThings IoT apps
 
-**smartThings-contexIoT** folder contains SmartThings official and third-party apps obtained **early 2016**. Additionally, it includes benchmark apps for malicious app analysis.
+**smartThings-contexIoT** folder contains SmartThings official and third-party apps obtained **early 2016**. These apps are evaluated in ContexIoT paper (see below). Furthermore, it includes malicious apps migrated from mobile phone research.
 
 ## Citing this work
 
