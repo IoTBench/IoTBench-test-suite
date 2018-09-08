@@ -2,7 +2,7 @@
 
 ![alt text](http://i68.tinypic.com/25ut821.jpg)
 
-# SainT SmartThings IoT apps
+# ProvThings SmartThings IoT apps
 
 **smartThings-ProvThings** folder contains various attacks as presented in Table 4 in the paper.
 
