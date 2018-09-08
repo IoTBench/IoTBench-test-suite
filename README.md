@@ -62,8 +62,8 @@ We would like to thank, among others, the following authors contributed IoT apps
 - [Z. Berkay Celik](https://beerkay.github.io/) (Penn State University)
 - [Leo Babun](http://leobabun.wixsite.com/leo-babun-phd) (Florida International University)
 - [Yunhan Jia](http://web.eecs.umich.edu/~jackjia/) (University of Michigan)
+- [Qi Wang](https://seclab.illinois.edu/people) (University of Illinois Urbana-Champaign)
 - Amit Kumar Sikder (Florida International University)
-- 
 
 ## Copyright
 You can find the copyright under each folder of the apps.
