@@ -8,7 +8,7 @@
 
 ## What is IoTBench?
 
-**IoTBench** is an IoT-specific test corpus, an open repository for evaluating systems designed for IoT app analyses. It is developed under the **SainT** project. You can access the paper on arXiv: [Sensitive Information Tracking in Commodity IoT](https://arxiv.org/abs/1802.08307).
+**IoTBench** is an IoT-specific test corpus, an open repository for evaluating systems designed for IoT app analyses. It is developed under the **SainT** project. You can access the paper on arXiv: [Sensitive Information Tracking in Commodity IoT](https://www.usenix.org/system/files/conference/usenixsecurity18/sec18-celik.pdf).
 
 ### What kind of apps does **IoTBench** include?
 Currently, **IoTBench** has 236 official SmartThings apps (in smartthings-official folder) and 69 third-party SmartThings apps (in smartThings-third-party folder).
@@ -56,7 +56,6 @@ Contributions are welcomed! To contribute additional test cases to **IoTBench**,
 ```
 
 ## Authors
-This repo is managed and maintained by [Z. Berkay Celik](https://beerkay.github.io/)
 
 We would like to thank, among others, the following authors contributed IoT apps (ordered according to the GitHub contributors page):
 - [Z. Berkay Celik](https://beerkay.github.io/) (Penn State University)
