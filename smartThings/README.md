@@ -1,4 +1,4 @@
-![alt text](http://i68.tinypic.com/25ut821.jpg)
+
 
 # SmartThings IoT apps
 
