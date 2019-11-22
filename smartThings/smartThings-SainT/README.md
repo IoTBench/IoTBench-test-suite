@@ -1,7 +1,5 @@
 
 
-![alt text](http://i68.tinypic.com/25ut821.jpg)
-
 # SainT SmartThings IoT apps
 
 **smartThings-SainT** folder contains SmartThings official and third-party apps obtained **late 2017**. Additionally, it includes benchmark apps for static and dynamic taint analysis tools.
